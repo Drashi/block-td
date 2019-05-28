@@ -1,6 +1,8 @@
 import "phaser";
 import * as EasyStar from "easystarjs";
-import { Enemy } from "./enemies/enemy";
+import { EnemyManager } from "./enemies/enemyManager";
+import { TowerManager } from "./towers/towerManager";
+import { Tower } from "./towers/tower";
 import MapCoordinates from "./interfaces/mapCoordinates";
 
 export class GameScene extends Phaser.Scene {
@@ -11,9 +13,8 @@ export class GameScene extends Phaser.Scene {
   spawnPosition: MapCoordinates;
   base: Phaser.GameObjects.Sprite[];
   basePosition: MapCoordinates;
-  enemies: Enemy[];
-  spawnInterval: number;
-  spawnedEnemies: number;
+  enemyManager: EnemyManager;
+  towerManager: TowerManager;
 
   constructor() {
     super({
@@ -30,19 +31,23 @@ export class GameScene extends Phaser.Scene {
     this.load.image('base', 'assets/base.png');
     this.load.image('spawn', 'assets/spawn.png');
     this.load.image('phaserguy', 'assets/phaserguy.png');
+    this.load.image('tower', 'assets/base.png');
+    this.load.image('radius', 'assets/radius.png');
   }
 
   create(): void {
     this.initMap();
     this.initObjects();
     this.initFinder();
-    this.input.on('pointerdown', this.startWave, this);
+    this.enemyManager = new EnemyManager();
+    this.towerManager = new TowerManager();
+  
+    this.input.on('pointerdown', () => this.enemyManager.startWave(this, this.spawnPosition, this.basePosition, this.finder), this);
   }
 
   update(): void {
-    for (let i = 0; i < this.enemies.length; i++) {
-      this.physics.overlap(this.enemies[i], this.base, this.onBaseReached(this.enemies[i]), null, this);
-    }
+    this.enemyManager.baseCollisionDetection(this, this.base);
+    this.towerManager.enemyInRangeDetection(this, this.enemyManager);
   }
 
   initMap(): void {
@@ -61,7 +66,6 @@ export class GameScene extends Phaser.Scene {
   
     this.spawnPosition = this.getTilePosition(this.spawn[0].x, this.spawn[0].y);
     this.basePosition = this.getTilePosition(this.base[0].x, this.base[0].y);
-    this.enemies = [];
   }
 
   initFinder(): void {
@@ -91,27 +95,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.finder.setAcceptableTiles(acceptableTiles);
-  }
-
-  startWave(): void {
-    this.spawnedEnemies = 0;
-    this.spawnInterval = setInterval(() => {
-      if (this.spawnedEnemies < 10) {
-        let enemy = new Enemy(this, this.spawnPosition, 'phaserguy');
-        enemy.spawn(this.spawnPosition, this.basePosition, this.finder);
-        this.enemies.push(enemy);
-        this.spawnedEnemies++;
-      } else {
-        clearInterval(this.spawnInterval);
-      }
-    }, 1000);
-  }
-
-  onBaseReached(enemy: Enemy): () => void {
-    return function () {
-      enemy.destroy();
-      this.enemies.splice(this.enemies.indexOf(enemy), 1);
-    }
   }
 
   private getTileID(x: number, y: number) {
