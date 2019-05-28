@@ -1,13 +1,19 @@
 import "phaser";
 import * as EasyStar from "easystarjs";
+import { Enemy } from "./enemies/enemy";
+import MapCoordinates from "./interfaces/mapCoordinates";
 
 export class GameScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   tiles: Phaser.Tilemaps.Tileset;
   finder: EasyStar.js;
-  spawnPosition: any;
-  basePosition: any;
-  enemy: Phaser.Physics.Arcade.Image;
+  spawn: Phaser.GameObjects.Sprite[];
+  spawnPosition: MapCoordinates;
+  base: Phaser.GameObjects.Sprite[];
+  basePosition: MapCoordinates;
+  enemies: Enemy[];
+  spawnInterval: number;
+  spawnedEnemies: number;
 
   constructor() {
     super({
@@ -23,12 +29,20 @@ export class GameScene extends Phaser.Scene {
     this.load.image('tileset', 'assets/gridtiles.png');
     this.load.image('base', 'assets/base.png');
     this.load.image('spawn', 'assets/spawn.png');
+    this.load.image('phaserguy', 'assets/phaserguy.png');
   }
 
   create(): void {
     this.initMap();
     this.initObjects();
     this.initFinder();
+    this.input.on('pointerdown', this.startWave, this);
+  }
+
+  update(): void {
+    for (let i = 0; i < this.enemies.length; i++) {
+      this.physics.overlap(this.enemies[i], this.base, this.onBaseReached(this.enemies[i]), null, this);
+    }
   }
 
   initMap(): void {
@@ -41,10 +55,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   initObjects(): void {
-    const spawn = this.map.createFromObjects("Spawn", 50, {key: 'spawn'});
-    const base = this.map.createFromObjects("Base", 40, {key: 'base'});
-    this.spawnPosition = this.getTilePosition(spawn[0].x, spawn[0].y);
-    this.basePosition = this.getTilePosition(base[0].x, base[0].y);
+    this.spawn = this.map.createFromObjects("Spawn", 50, {key: 'spawn'});
+    this.base = this.map.createFromObjects("Base", 40, {key: 'base'});
+    this.physics.add.existing(this.base[0]);
+  
+    this.spawnPosition = this.getTilePosition(this.spawn[0].x, this.spawn[0].y);
+    this.basePosition = this.getTilePosition(this.base[0].x, this.base[0].y);
+    this.enemies = [];
   }
 
   initFinder(): void {
@@ -76,46 +93,34 @@ export class GameScene extends Phaser.Scene {
     this.finder.setAcceptableTiles(acceptableTiles);
   }
 
-  getTileID(x: number, y: number) {
+  startWave(): void {
+    this.spawnedEnemies = 0;
+    this.spawnInterval = setInterval(() => {
+      if (this.spawnedEnemies < 10) {
+        let enemy = new Enemy(this, this.spawnPosition, 'phaserguy');
+        enemy.spawn(this.spawnPosition, this.basePosition, this.finder);
+        this.enemies.push(enemy);
+        this.spawnedEnemies++;
+      } else {
+        clearInterval(this.spawnInterval);
+      }
+    }, 1000);
+  }
+
+  onBaseReached(enemy: Enemy): () => void {
+    return function () {
+      enemy.destroy();
+      this.enemies.splice(this.enemies.indexOf(enemy), 1);
+    }
+  }
+
+  private getTileID(x: number, y: number) {
     const tile = this.map.getTileAt(x, y, true, "Path");
     return tile.index;
   }
 
-  calculatePosition(x: number, y: number) {
-    const toX = Math.floor(x / this.map.tileWidth);
-    const toY = Math.floor(y / this.map.tileHeight);
-    const fromX = Math.floor(this.enemy.x / this.map.tileWidth);
-    const fromY = Math.floor(this.enemy.y / this.map.tileHeight);
-
-    this.finder.findPath(fromX, fromY, toX, toY, (path) => {
-      if (path !== null)
-        this.moveCharacter(path);
-    });
-
-    this.finder.calculate();
-  }
-
-  getTilePosition(x: number, y: number) {
+  private getTilePosition(x: number, y: number) {
     return {x: Math.floor(x / this.map.tileWidth) * this.map.tileWidth,
             y: Math.floor(y / this.map.tileHeight) * this.map.tileHeight}
   }
-
-  moveCharacter(path) {
-    const tweens = [];
-
-    for (let i = 0; i < path.length-1; i++) {
-      const ex = path[i+1].x;
-      const ey = path[i+1].y;
-
-      tweens.push({
-        targets: this.enemy,
-        x: {value: ex * this.map.tileWidth, duration: 200},
-        y: {value: ey * this.map.tileHeight, duration: 200}
-      });
-    }
-
-    this.tweens.timeline({
-      tweens: tweens
-    });
-  }
-};
+}
