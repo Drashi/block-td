@@ -3,11 +3,13 @@ import * as EasyStar from "easystarjs";
 import MapCoordinates from '../interfaces/mapCoordinates';
 
 export class Enemy extends Phaser.Physics.Arcade.Image {
+  health: number;
+  speed: number;
+
   constructor(scene: Phaser.Scene, spawnPosition: MapCoordinates, type: string) {
     super(scene, spawnPosition.x, spawnPosition.y, type);
     this.setDepth(1);
     this.setOrigin(0, 0.5);
-  
     scene.add.existing(this);
     scene.physics.add.existing(this);
   }
@@ -38,13 +40,14 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
       const ey = path[i+1].y;
 
       tweens.push({
-        targets: enemy,
-        x: {value: ex * 32, duration: 200},
-        y: {value: ey * 32, duration: 200}
+        x: {value: ex * 32},
+        y: {value: ey * 32}
       });
     }
 
     this.scene.tweens.timeline({
+      targets: enemy,
+      totalDuration: path.length * 2500 / this.speed,
       tweens: tweens
     });
   }
