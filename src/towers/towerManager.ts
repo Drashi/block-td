@@ -1,13 +1,22 @@
 import "phaser";
+import { TowerFactory } from "./towerFactory";
 import { Tower } from "./tower";
 import { Enemy } from "../enemies/enemy";
 import { EnemyManager } from "../enemies/enemyManager";
+import MapCoordinates from "../interfaces/mapCoordinates";
 
 export class TowerManager {
   towers: Tower[];
+  towerFactory: TowerFactory;
 
   constructor() {
     this.towers = [];
+    this.towerFactory = new TowerFactory();
+  }
+
+  build(scene: Phaser.Scene, position: MapCoordinates, type: string) {
+    let tower: Tower = this.towerFactory.getInstance<Tower>(type, scene, position);
+    this.towers.push(tower);
   }
 
   enemyInRangeDetection(scene, enemyManager: EnemyManager): void {
