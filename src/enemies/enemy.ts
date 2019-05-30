@@ -14,6 +14,16 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
     scene.physics.add.existing(this);
   }
 
+  onHit(damage: number) {
+    this.health -= damage;
+    if (!this.isAlive())
+      this.destroy();
+  }
+
+  isAlive(): boolean {
+    return this.health > 0;
+  }
+
   spawn(spawnPosition: MapCoordinates, basePosition: MapCoordinates, finder: EasyStar.js): void {
     this.calculatePosition(spawnPosition, basePosition, this, finder);
   }

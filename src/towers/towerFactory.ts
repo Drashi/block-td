@@ -1,9 +1,9 @@
 import { Tower } from './tower';
-import { Basic } from './types/basic';
+import { TowerBasic } from './types/towerBasic';
 
 export class TowerFactory {
   towerTypes: {} = {
-    Basic
+    TowerBasic
   };
 
   constructor() {}

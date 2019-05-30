@@ -31,8 +31,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image('base', 'assets/base.png');
     this.load.image('spawn', 'assets/spawn.png');
     this.load.image('phaserguy', 'assets/phaserguy.png');
-    this.load.image('tower', 'assets/base.png');
-    this.load.image('radius', 'assets/radius.png');
+    this.load.image('tower_basic', 'assets/base.png');
+    this.load.image('bullet_basic', 'assets/bullet_basic.png');
   }
 
   create(): void {

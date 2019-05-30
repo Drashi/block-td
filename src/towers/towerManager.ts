@@ -1,6 +1,7 @@
 import "phaser";
 import { TowerFactory } from "./towerFactory";
 import { Tower } from "./tower";
+import { Bullet } from "./bullets/bullet";
 import { Enemy } from "../enemies/enemy";
 import { EnemyManager } from "../enemies/enemyManager";
 import MapCoordinates from "../interfaces/mapCoordinates";
@@ -26,6 +27,7 @@ export class TowerManager {
           this.towers[t].stopAttacking();
 
         scene.physics.overlap(enemyManager.enemies[e], this.towers[t].getRadius(), this.onTowerRadiusReached(this.towers[t], enemyManager.enemies[e]), null, this);
+        scene.physics.overlap(enemyManager.enemies[e], this.towers[t].getBullets(), this.onEnemyHit, null, this);
       }
     }
   }
@@ -34,6 +36,14 @@ export class TowerManager {
     return function () {
       if (!tower.isAttacking())
         tower.attack(target)
+    }
+  }
+
+  onEnemyHit(enemy: Enemy, bullet: Bullet): void {
+    if (bullet.active) {
+      enemy.onHit(bullet.damage);
+      bullet.setActive(false);
+      bullet.setVisible(false);
     }
   }
 }
