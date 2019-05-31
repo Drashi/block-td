@@ -1,28 +1,22 @@
 import "phaser";
-import * as EasyStar from "easystarjs";
+import { PathFinder } from "./pathFinder";
 import { EnemyManager } from "./enemies/enemyManager";
 import { TowerManager } from "./towers/towerManager";
-import { Tower } from "./towers/tower";
 import MapCoordinates from "./interfaces/mapCoordinates";
 
 export class GameScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   tiles: Phaser.Tilemaps.Tileset;
-  finder: EasyStar.js;
-  spawn: Phaser.GameObjects.Sprite[];
-  spawnPosition: MapCoordinates;
-  base: Phaser.GameObjects.Sprite[];
-  basePosition: MapCoordinates;
+  pathFinder: PathFinder;
   enemyManager: EnemyManager;
   towerManager: TowerManager;
+  spawn: Phaser.GameObjects.Sprite;
+  base: Phaser.GameObjects.Sprite;
 
   constructor() {
     super({
       key: "GameScene"
     });
-  }
-
-  init(): void {
   }
 
   preload(): void {
@@ -38,16 +32,11 @@ export class GameScene extends Phaser.Scene {
   create(): void {
     this.initMap();
     this.initObjects();
-    this.initFinder();
+    this.pathFinder = new PathFinder(this);
     this.enemyManager = new EnemyManager();
     this.towerManager = new TowerManager();
-  
-    this.input.on('pointerdown', () => this.enemyManager.startWave(this, this.spawnPosition, this.basePosition, this.finder), this);
-  }
-
-  update(): void {
-    this.enemyManager.baseCollisionDetection(this, this.base);
-    this.towerManager.enemyInRangeDetection(this, this.enemyManager);
+ 
+    this.input.on('pointerdown', () => this.enemyManager.startWave(this), this);
   }
 
   initMap(): void {
@@ -60,50 +49,15 @@ export class GameScene extends Phaser.Scene {
   }
 
   initObjects(): void {
-    this.spawn = this.map.createFromObjects("Spawn", 50, {key: 'spawn'});
-    this.base = this.map.createFromObjects("Base", 40, {key: 'base'});
-    this.physics.add.existing(this.base[0]);
-  
-    this.spawnPosition = this.getTilePosition(this.spawn[0].x, this.spawn[0].y);
-    this.basePosition = this.getTilePosition(this.base[0].x, this.base[0].y);
+    this.spawn = this.map.createFromObjects("Spawn", 50, {key: 'spawn'})[0];
+    this.base = this.map.createFromObjects("Base", 40, {key: 'base'})[0];
+    this.physics.add.existing(this.base);
   }
 
-  initFinder(): void {
-    this.finder = new EasyStar.js();
-    const grid = [];
-
-    for(let y = 0; y < this.map.height; y++) {
-      let col = [];
-      for(let x = 0; x < this.map.width; x++) {
-        col.push(this.getTileID(x, y));
-      }
-      grid.push(col);
+  getTilePosition(x: number, y: number): MapCoordinates {
+    return {
+      x: Math.floor(x / this.map.tileWidth) * this.map.tileWidth,
+      y: Math.floor(y / this.map.tileHeight) * this.map.tileHeight
     }
-    this.finder.setGrid(grid);
-
-    const tileset = this.map.tilesets[0];
-    const properties = tileset.tileProperties;
-    const acceptableTiles = [];
-
-    for(let i = tileset.firstgid - 1; i < this.tiles.total; i++) {
-      if (!properties.hasOwnProperty(i)) {
-        acceptableTiles.push(i+1);
-        continue;
-      }
-      if (!properties[i].collide)
-        acceptableTiles.push(i + 1);
-    }
-
-    this.finder.setAcceptableTiles(acceptableTiles);
-  }
-
-  private getTileID(x: number, y: number) {
-    const tile = this.map.getTileAt(x, y, true, "Path");
-    return tile.index;
-  }
-
-  private getTilePosition(x: number, y: number) {
-    return {x: Math.floor(x / this.map.tileWidth) * this.map.tileWidth,
-            y: Math.floor(y / this.map.tileHeight) * this.map.tileHeight}
   }
 }

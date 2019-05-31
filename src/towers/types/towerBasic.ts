@@ -1,4 +1,5 @@
 import "phaser";
+import { GameScene } from "../../gameScene";
 import { Tower } from '../tower';
 import MapCoordinates from '../../interfaces/mapCoordinates';
 
@@ -9,9 +10,7 @@ export class TowerBasic extends Tower {
   radiusSize: number = 200;
   bulletType: string = 'basic';
 
-  constructor(scene: Phaser.Scene, position: MapCoordinates) {
+  constructor(scene: GameScene, position: MapCoordinates) {
     super(scene, position, 'tower_basic');
-    this.setRadius();
-    this.setBullets();
   }
 }

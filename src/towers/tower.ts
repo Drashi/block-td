@@ -1,29 +1,52 @@
 import "phaser";
+import { GameScene } from '../gameScene';
 import { Enemy } from '../enemies/enemy';
 import { BulletManager } from './bullets/bulletManager';
+import { Bullet } from './bullets/bullet';
 import MapCoordinates from '../interfaces/mapCoordinates';
 
 export class Tower extends Phaser.Physics.Arcade.Image {
+  scene: GameScene;
   name: string;
   damage: number;
   attackSpeed: number;
   radiusSize: number;
   placed: boolean = false;
   attacking: boolean = false;
-  attackInterval: number;
-  attackDelay: boolean;
+  attackDelay: number = 0;
   attackAngle: number;
   radius: Phaser.GameObjects.Arc | any;
   target: Enemy;
   bulletType: string;
   bulletManager: BulletManager;
 
-  constructor(scene: Phaser.Scene, position: MapCoordinates, type: string) {
+  constructor(scene: GameScene, position: MapCoordinates, type: string) {
     super(scene, position.x, position.y, type);
     this.setDepth(1);
     this.setOrigin(0, 0);
     scene.add.existing(this);
     scene.physics.add.existing(this);
+  }
+
+  update(time: any) {
+    if (this.isAttacking() && !this.isTargetInRadius())
+      this.stopAttacking();
+    
+    for (let enemies of this.scene.enemyManager.enemies.values()) {
+      this.scene.physics.overlap(enemies, this.getRadius(), this.onTowerRadiusReached, null, this);
+      this.scene.physics.overlap(enemies, this.getBullets(), this.onEnemyHit, null, this);
+    }
+
+    if (this.isAttacking() && time > this.attackDelay) {
+      this.shoot();
+      this.attackDelay = time + this.attackSpeed;
+    }
+  }
+
+  set(position: MapCoordinates): void {
+    this.setPosition(position.x, position.y);
+    this.setRadius();
+    this.setBullets();
   }
 
   setRadius(): void {
@@ -42,31 +65,22 @@ export class Tower extends Phaser.Physics.Arcade.Image {
   }
 
   shoot(): void {
-    if (!this.attackDelay) {
-      this.attackDelay = true;
+    const towerCenter = this.getCenter();
+    const targetCenter = this.target.getCenter();
+    this.attackAngle = Phaser.Math.Angle.Between(towerCenter.x, towerCenter.y, targetCenter.x, targetCenter.y);
 
-      const towerCenter = this.getCenter();
-      const targetCenter = this.target.getCenter();
-      this.attackAngle = Phaser.Math.Angle.Between(towerCenter.x, towerCenter.y, targetCenter.x, targetCenter.y);
-  
-      const bullet = this.bulletManager.getBullet();
+    const bullet = this.bulletManager.getBullet();
 
-      if (bullet)
-        bullet.fire(towerCenter.x, towerCenter.y, this.attackAngle, this.radiusSize);
-
-      setTimeout(() => this.attackDelay = false, this.attackSpeed);
-    }
+    if (bullet)
+      bullet.fire(towerCenter.x, towerCenter.y, this.attackAngle, this.radiusSize);
   }
 
   attack(target: Enemy) {
-    this.attacking = true;
     this.target = target;
-    this.attackInterval = window.setInterval(() => this.shoot(), 10);
-    this.shoot();
+    this.attacking = true;
   }
 
   stopAttacking(): void {
-    clearInterval(this.attackInterval);
     this.attacking = false;
     this.target = null;
   }
@@ -81,5 +95,18 @@ export class Tower extends Phaser.Physics.Arcade.Image {
 
   getRadius(): Phaser.GameObjects.Arc {
     return this.radius;
+  }
+
+  onTowerRadiusReached(radius: Phaser.GameObjects.Arc, target: Enemy): void {
+    if (!this.isAttacking())
+      this.attack(target);
+  }
+
+  onEnemyHit(enemy: Enemy, bullet: Bullet): void {
+    if (bullet.active) {
+      enemy.onHit(bullet.damage);
+      bullet.setActive(false);
+      bullet.setVisible(false);
+    }
   }
 }

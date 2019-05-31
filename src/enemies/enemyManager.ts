@@ -1,41 +1,44 @@
 import "phaser";
-import * as EasyStar from "easystarjs";
-import { Enemy } from "./enemy";
-import { Phaserguy } from "./types/phaserguy";
-import MapCoordinates from "../interfaces/mapCoordinates";
+import { GameScene } from "../gameScene";
+import { EnemyPhaserguy } from "./types/enemyPhaserguy";
 
 export class EnemyManager {
-  enemies: Enemy[];
+  enemyTypes: {} = {
+    'phaserguy': {class: EnemyPhaserguy, texture: 'phaserguy'}
+  };
+
+  enemies: Map<string, Phaser.Physics.Arcade.Group>;
   spawnedEnemies: number;
   spawnInterval: number;
 
   constructor() {
-    this.enemies = [];
+    this.enemies = new Map();
   }
 
-  baseCollisionDetection(scene: Phaser.Scene, base: Phaser.GameObjects.Sprite[], ): void {
-    for (let i = 0; i < this.enemies.length; i++)
-      scene.physics.overlap(this.enemies[i], base, this.onBaseReached(this.enemies[i]), null, this);
+  spawnEnemy(scene: GameScene, enemyType: string): void {
+    let enemy;
+  
+    if (this.enemies.has(enemyType))  {
+      enemy = this.enemies.get(enemyType).get();
+    } else {
+      this.enemies.set(enemyType, scene.physics.add.group({ classType: this.enemyTypes[enemyType].class as any, defaultKey: this.enemyTypes[enemyType].texture, runChildUpdate: true }));
+      enemy = this.enemies.get(enemyType).get();
+    }
+
+    const spawnPosition = scene.getTilePosition(scene.spawn.x, scene.spawn.y);
+    const basePosition = scene.getTilePosition(scene.base.x, scene.base.y);
+    enemy.set(spawnPosition, basePosition, scene.pathFinder);
   }
 
-  startWave(scene: Phaser.Scene, spawnPosition: MapCoordinates, basePosition: MapCoordinates, finder: EasyStar.js): void {
+  startWave(scene: GameScene): void {
     this.spawnedEnemies = 0;
     this.spawnInterval = window.setInterval(() => {
       if (this.spawnedEnemies < 10) {
-        let enemy = new Phaserguy(scene, spawnPosition);
-        enemy.spawn(spawnPosition, basePosition, finder);
-        this.enemies.push(enemy);
+        this.spawnEnemy(scene, 'phaserguy');
         this.spawnedEnemies++;
       } else {
         clearInterval(this.spawnInterval);
       }
     }, 1000);
-  }
-
-  onBaseReached(enemy: Enemy): () => void {
-    return function () {
-      enemy.destroy();
-      this.enemies.splice(this.enemies.indexOf(enemy), 1);
-    }
   }
 }
