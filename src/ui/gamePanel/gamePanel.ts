@@ -1,12 +1,15 @@
 import "phaser";
+import { GameScene } from "../../gameScene";
+import { startWaveButton } from "./startWaveButton";
 
 export class GamePanel extends Phaser.GameObjects.Container {
-  scene: Phaser.Scene;
-  background: Phaser.GameObjects.Image;
+  scene: GameScene;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
+  constructor(scene: GameScene, x: number, y: number) {
     super(scene, x, y);
     this.scene = scene;
     scene.add.existing(this);
+
+    this.add(new startWaveButton(scene, 85, 28));
   }
 }

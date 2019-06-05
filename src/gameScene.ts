@@ -23,7 +23,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('background', 'assets/background.jpg');
+    this.load.image('background', 'assets/background.png');
     this.load.tilemapTiledJSON('map', 'assets/map.json');
     this.load.image('tileset', 'assets/gridtiles.png');
     this.load.image('base', 'assets/base.png');
@@ -31,6 +31,12 @@ export class GameScene extends Phaser.Scene {
     this.load.image('phaserguy', 'assets/phaserguy.png');
     this.load.image('tower-basic', 'assets/base.png');
     this.load.image('bullet-basic', 'assets/bullet-basic.png');
+
+    this.loadGamePanelAssets();
+  }
+
+  loadGamePanelAssets(): void {
+    this.load.image('button-start-wave', 'assets/ui/game-panel/button-start-wave.png');
   }
 
   create(): void {
@@ -43,9 +49,7 @@ export class GameScene extends Phaser.Scene {
     this.pathFinder = new PathFinder(this);
     this.enemyManager = new EnemyManager();
     this.towerManager = new TowerManager();
-    this.gamePanel = new GamePanel(this, 640, 0);
-
-    this.input.on('pointerdown', () => this.enemyManager.startWave(this), this);
+    this.gamePanel = new GamePanel(this, 650, 10);
   }
 
   initMap(): void {
