@@ -25,6 +25,7 @@ export class EnemyManager {
       enemy = this.enemies.get(enemyType).get();
     }
 
+    scene.mapContainer.add(enemy);
     const spawnPosition = scene.getTilePosition(scene.spawn.x, scene.spawn.y);
     const basePosition = scene.getTilePosition(scene.base.x, scene.base.y);
     enemy.set(spawnPosition, basePosition, scene.pathFinder);

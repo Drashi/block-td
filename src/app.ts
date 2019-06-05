@@ -3,8 +3,8 @@ import { GameScene } from "./gameScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   title: "Phaser TD",
-  width: 640,
-  height: 640,
+  width: 820,
+  height: 660,
   parent: "game",
   physics: {
     default: "arcade",

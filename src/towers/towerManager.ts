@@ -5,7 +5,7 @@ import MapCoordinates from "../interfaces/mapCoordinates";
 
 export class TowerManager {
   towerTypes: {} = {
-    'basic': {class: TowerBasic, texture: 'tower_basic'}
+    'basic': {class: TowerBasic, texture: 'tower-basic'}
   };
   towers: Map<string, Phaser.Physics.Arcade.Group>;
 
@@ -23,6 +23,7 @@ export class TowerManager {
       tower = this.towers.get(towerType).get();
     }
 
+    scene.mapContainer.add(tower);
     tower.setActive(true);
     tower.setVisible(true);
     tower.set(position);
