@@ -14,20 +14,20 @@ export class PathFinder extends EasyStar.js {
   init(): void {
     const grid = [];
 
-    for(let y = 0; y < this.scene.map.height; y++) {
+    for(let y = 0; y < this.scene.mapManager.map.height; y++) {
       let col = [];
-      for(let x = 0; x < this.scene.map.width; x++) {
+      for(let x = 0; x < this.scene.mapManager.map.width; x++) {
         col.push(this.getTileID(x, y));
       }
       grid.push(col);
     }
     this.setGrid(grid);
 
-    const tileset = this.scene.map.tilesets[0];
+    const tileset = this.scene.mapManager.map.tilesets[0];
     const properties = tileset.tileProperties;
     const acceptableTiles = [];
 
-    for(let i = tileset.firstgid - 1; i < this.scene.tiles.total; i++) {
+    for(let i = tileset.firstgid - 1; i < this.scene.mapManager.tiles.total; i++) {
       if (!properties.hasOwnProperty(i)) {
         acceptableTiles.push(i+1);
         continue;
@@ -40,10 +40,10 @@ export class PathFinder extends EasyStar.js {
   }
 
   calculatePosition(from: MapCoordinates, to: MapCoordinates, callback: (...any) => any): void {
-    const fromX = Math.floor(from.x / this.scene.map.tileWidth);
-    const fromY = Math.floor(from.y / this.scene.map.tileHeight);
-    const toX = Math.floor(to.x / this.scene.map.tileWidth);
-    const toY = Math.floor(to.y / this.scene.map.tileHeight);
+    const fromX = Math.floor(from.x / this.scene.mapManager.map.tileWidth);
+    const fromY = Math.floor(from.y / this.scene.mapManager.map.tileHeight);
+    const toX = Math.floor(to.x / this.scene.mapManager.map.tileWidth);
+    const toY = Math.floor(to.y / this.scene.mapManager.map.tileHeight);
 
     this.findPath(fromX, fromY, toX, toY, (path) => {
       if (path !== null)
@@ -54,7 +54,7 @@ export class PathFinder extends EasyStar.js {
   }
   
   private getTileID(x: number, y: number): number {
-    const tile = this.scene.map.getTileAt(x, y, true, "Path");
+    const tile = this.scene.mapManager.map.getTileAt(x, y, true, "Path");
     return tile.index;
   }
 }

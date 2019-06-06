@@ -42,8 +42,8 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
       const ey = path[i+1].y;
 
       tweens.push({
-        x: {value: ex * this.scene.map.tileWidth},
-        y: {value: ey * this.scene.map.tileHeight}
+        x: {value: ex * this.scene.mapManager.map.tileWidth},
+        y: {value: ey * this.scene.mapManager.map.tileHeight}
       });
     }
 
@@ -55,7 +55,7 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
   }
 
   update(): void {
-    this.scene.physics.overlap(this, this.scene.base, this.onBaseReached, null, this);
+    this.scene.physics.overlap(this, this.scene.mapManager.base, this.onBaseReached, null, this);
   }
 
   onBaseReached(enemy: Enemy): void {

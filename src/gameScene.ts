@@ -1,20 +1,17 @@
 import "phaser";
+import { CONFIG } from "./config";
+import { MapManager } from "./mapManager";
 import { PathFinder } from "./pathFinder";
 import { EnemyManager } from "./enemies/enemyManager";
 import { TowerManager } from "./towers/towerManager";
 import { GamePanel } from "./ui/gamePanel/gamePanel";
-import MapCoordinates from "./interfaces/mapCoordinates";
 
 export class GameScene extends Phaser.Scene {
-  mapContainer: Phaser.GameObjects.Container;
-  map: Phaser.Tilemaps.Tilemap;
-  tiles: Phaser.Tilemaps.Tileset;
-  gamePanel: Phaser.GameObjects.Container;
+  mapManager: MapManager;
+  gamePanel: GamePanel;
   pathFinder: PathFinder;
   enemyManager: EnemyManager;
   towerManager: TowerManager;
-  spawn: Phaser.GameObjects.Sprite;
-  base: Phaser.GameObjects.Sprite;
 
   constructor() {
     super({
@@ -43,39 +40,17 @@ export class GameScene extends Phaser.Scene {
     const background = this.add.image(0, 0, 'background');
     background.setPosition(0 + background.width / 2, 0 + background.height / 2);
 
-    this.initMap();
-    this.initObjects();
+    this.mapManager = new MapManager(this);
+    this.mapManager.setMap();
+
+    this.gamePanel = new GamePanel(this, CONFIG.BORDER_SIZE + this.mapManager.map.widthInPixels, CONFIG.BORDER_SIZE);
 
     this.pathFinder = new PathFinder(this);
     this.enemyManager = new EnemyManager();
     this.towerManager = new TowerManager();
-    this.gamePanel = new GamePanel(this, 650, 10);
   }
 
-  initMap(): void {
-    this.map = this.make.tilemap({ key: 'map'});
-    this.tiles = this.map.addTilesetImage('tiles', 'tileset');
-    this.map.createStaticLayer(0, this.tiles, 10, 10);
-    this.map.createStaticLayer(1, this.tiles, 10, 10);
-    this.map.createStaticLayer(2, this.tiles, 10, 10);
-    this.map.createStaticLayer(3, this.tiles, 10, 10);
-  }
-
-  initObjects(): void {
-    this.mapContainer = this.add.container(10, 10);
-    this.spawn = this.map.createFromObjects("Spawn", 50, {key: 'spawn'})[0];
-    this.base = this.map.createFromObjects("Base", 40, {key: 'base'})[0];
-    this.physics.add.existing(this.base);
-
-    this.mapContainer.add([this.spawn, this.base]);
-    this.add.existing(this.mapContainer);
-    this.mapContainer.setDepth(1);
-  }
-
-  getTilePosition(x: number, y: number): MapCoordinates {
-    return {
-      x: Math.floor(x / this.map.tileWidth) * this.map.tileWidth,
-      y: Math.floor(y / this.map.tileHeight) * this.map.tileHeight
-    }
+  update(time: any, delta: any): void {
+    this.mapManager.updateTiles();
   }
 }

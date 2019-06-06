@@ -23,7 +23,7 @@ export class TowerManager {
       tower = this.towers.get(towerType).get();
     }
 
-    scene.mapContainer.add(tower);
+    scene.mapManager.mapContainer.add(tower);
     tower.setActive(true);
     tower.setVisible(true);
     tower.set(position);

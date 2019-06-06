@@ -19,7 +19,7 @@ export class BulletManager {
 
   getBullet(): Bullet {
     const bullet = this.bullets.get();
-    this.scene.mapContainer.add(bullet);
+    this.scene.mapManager.mapContainer.add(bullet);
 
     bullet.setDamage(this.bulletDamage);
     return bullet;

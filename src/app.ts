@@ -1,10 +1,11 @@
 import "phaser";
 import { GameScene } from "./gameScene";
+import { CONFIG } from "./config";
 
-const config: Phaser.Types.Core.GameConfig = {
+const phaserConfig: Phaser.Types.Core.GameConfig = {
   title: "Phaser TD",
-  width: 820,
-  height: 660,
+  width: CONFIG.GAME_WIDTH,
+  height: CONFIG.GAME_HEIGHT,
   parent: "game",
   physics: {
     default: "arcade",
@@ -23,5 +24,5 @@ export class PhaserTDGame extends Phaser.Game {
 }
 
 window.onload = () => {
-  var game = new PhaserTDGame(config);
+  var game = new PhaserTDGame(phaserConfig);
 };
