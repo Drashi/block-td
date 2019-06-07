@@ -7,7 +7,7 @@ export class MapManager {
   scene: GameScene;
   map: Phaser.Tilemaps.Tilemap;
   mapContainer: Phaser.GameObjects.Container;
-  mapBounds: Phaser.Geom.Rectangle;
+  mapBounds: Phaser.GameObjects.Rectangle;
   tiles: Phaser.Tilemaps.Tileset;
   buildableTerrain: Phaser.Tilemaps.DynamicTilemapLayer;
   tileMarker: Phaser.GameObjects.Graphics;
@@ -31,12 +31,14 @@ export class MapManager {
     this.map.createStaticLayer(3, this.tiles, CONFIG.BORDER_SIZE, CONFIG.BORDER_SIZE);
     this.map.setLayer(this.buildableTerrain);
 
-    this.mapBounds = new Phaser.Geom.Rectangle(CONFIG.BORDER_SIZE, CONFIG.BORDER_SIZE, this.map.widthInPixels - 1, this.map.heightInPixels - 1);
     this.setMapObjects();
   }
 
   setMapObjects(): void {
     this.mapContainer = this.scene.add.container(CONFIG.BORDER_SIZE, CONFIG.BORDER_SIZE);
+    this.mapBounds = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.map.widthInPixels - 1, this.map.heightInPixels - 1);
+    this.mapBounds.setPosition(this.mapBounds.x + this.mapBounds.width / 2, this.mapBounds.y + this.mapBounds.height / 2);
+
     this.spawn = this.map.createFromObjects("Spawn", 50, {key: 'spawn'})[0];
     this.base = this.map.createFromObjects("Base", 40, {key: 'base'})[0];
     this.scene.physics.add.existing(this.base);
@@ -49,7 +51,7 @@ export class MapManager {
     this.tileTint.setActive(false);
     this.tileTint.setVisible(false);
 
-    this.mapContainer.add([this.spawn, this.base, this.tileMarker, this.tileTint]);
+    this.mapContainer.add([this.mapBounds, this.spawn, this.base, this.tileMarker, this.tileTint]);
     this.scene.add.existing(this.mapContainer);
     this.mapContainer.setDepth(1);
   }
@@ -62,9 +64,9 @@ export class MapManager {
 
   updateTiles(): void {
     this.tileMarker.clear();
-
-    const x = Phaser.Math.Clamp(this.scene.input.activePointer.x, this.mapBounds.left, this.mapBounds.right);
-    const y = Phaser.Math.Clamp(this.scene.input.activePointer.y, this.mapBounds.top, this.mapBounds.bottom);
+    
+    const x = Phaser.Math.Clamp(this.scene.input.activePointer.x, this.mapBounds.getBounds().left, this.mapBounds.getBounds().right);
+    const y = Phaser.Math.Clamp(this.scene.input.activePointer.y, this.mapBounds.getBounds().top, this.mapBounds.getBounds().bottom);
 
     const pointerTileX = this.map.worldToTileX(x);
     const pointerTileY = this.map.worldToTileY(y);
@@ -74,12 +76,12 @@ export class MapManager {
 
     const isTileOccupied = !(this.map.hasTileAtWorldXY(x, y) && !this.occupiedTiles.includes(this.map.getTileAt(pointerTileX, pointerTileY)));
 
-    if (!isTileOccupied && this.scene.input.manager.activePointer.isDown && this.mapBounds.contains(this.scene.input.activePointer.x, this.scene.input.activePointer.y)) {
+    if (!isTileOccupied && this.scene.input.manager.activePointer.isDown && this.mapBounds.getBounds().contains(this.scene.input.activePointer.x, this.scene.input.activePointer.y)) {
       const activeTile = this.map.getTileAt(pointerTileX, pointerTileY);
       this.activeTile = activeTile;
       this.tileTint.setPosition(tileX + this.tileTint.width / 2, tileY + this.tileTint.height / 2);
       this.buildMode(true);
-    } else if (this.mapBounds.contains(this.scene.input.activePointer.x, this.scene.input.activePointer.y)) {
+    } else if (this.mapBounds.getBounds().contains(this.scene.input.activePointer.x, this.scene.input.activePointer.y)) {
       this.tileMarker.lineStyle(2, (!isTileOccupied ? 0x00ff00 : 0xff0000), 1);
       this.tileMarker.strokeRect(tileX, tileY, this.map.tileWidth, this.map.tileHeight);
     }
