@@ -13,15 +13,18 @@ export class BuildButtonsContainer extends Phaser.GameObjects.Container {
 
   setButtons(scene: GameScene, columns: number, gapSize: number): void {
     for (let tower of scene.towerManager.towerTypes.values()) {
-      let currentIndex: number = this.length + 1;
       let button: BuildButton = new BuildButton(scene, 0, 0, tower.texture);
-      let firstInRow: boolean = currentIndex % columns === 1;
-      let firstRow: boolean = Math.floor(currentIndex / columns) === 0;
-      let buttonX: number = (button.width + (!firstInRow ? gapSize : 0)) * (this.length % columns);
-      let buttonY: number = (button.height + (!firstRow ? gapSize : 0)) * Math.floor(this.length / columns);
-
-      button.setPosition(buttonX + button.width / 2, buttonY + button.height / 2);
       this.add(button);
     }
+
+    Phaser.Actions.GridAlign(this.getAll(), {
+      width: columns,
+      cellWidth: 32 + gapSize,
+      cellHeight: 32 + gapSize,
+      x: 0,
+      y: 0
+    });
+
+    this.iterate((button: BuildButton) => button.setPosition(button.x + (button.width + gapSize) / 2, button.y + (button.height + gapSize) / 2));
   }
 }
