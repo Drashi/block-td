@@ -25,9 +25,9 @@ export class GameScene extends Phaser.Scene {
     this.load.image('tileset', 'assets/gridtiles.png');
     this.load.image('base', 'assets/base.png');
     this.load.image('spawn', 'assets/spawn.png');
-    this.load.image('phaserguy', 'assets/phaserguy.png');
-    this.load.image('tower-basic', 'assets/base.png');
-    this.load.image('bullet-basic', 'assets/bullet-basic.png');
+    this.load.image('phaserguy', 'assets/enemies/phaserguy.png');
+    this.load.image('tower-basic', 'assets/towers/tower-basic.png');
+    this.load.image('bullet-basic', 'assets/bullets/bullet-basic.png');
 
     this.loadGamePanelAssets();
   }
@@ -39,15 +39,16 @@ export class GameScene extends Phaser.Scene {
   create(): void {
     const background = this.add.image(0, 0, 'background');
     background.setPosition(0 + background.width / 2, 0 + background.height / 2);
+    background.setDepth(1);
 
     this.mapManager = new MapManager(this);
     this.mapManager.setMap();
 
-    this.gamePanel = new GamePanel(this, CONFIG.BORDER_SIZE + this.mapManager.map.widthInPixels, CONFIG.BORDER_SIZE);
-
     this.pathFinder = new PathFinder(this);
     this.enemyManager = new EnemyManager();
     this.towerManager = new TowerManager();
+
+    this.gamePanel = new GamePanel(this, CONFIG.BORDER_SIZE * 2 + this.mapManager.map.widthInPixels, CONFIG.BORDER_SIZE);
   }
 
   update(time: any, delta: any): void {

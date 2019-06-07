@@ -29,24 +29,34 @@ export class Tower extends Phaser.Physics.Arcade.Image {
   }
 
   update(time: any) {
-    if (this.isAttacking() && !this.isTargetInRadius())
-      this.stopAttacking();
-    
-    for (let enemies of this.scene.enemyManager.enemies.values()) {
-      this.scene.physics.overlap(enemies, this.getRadius(), this.onTowerRadiusReached, null, this);
-      this.scene.physics.overlap(enemies, this.getBullets(), this.onEnemyHit, null, this);
-    }
+    if (this.placed) {
+      if (this.isAttacking() && (!this.isTargetInRadius() || !this.target.active))
+        this.stopAttacking();
+      
+      for (let enemies of this.scene.enemyManager.enemies.values()) {
+        this.scene.physics.overlap(enemies, this.getRadius(), this.onTowerRadiusReached, null, this);
+        this.scene.physics.overlap(enemies, this.getBullets(), this.onEnemyHit, null, this);
+      }
 
-    if (this.isAttacking() && time > this.attackDelay) {
-      this.shoot();
-      this.attackDelay = time + this.attackSpeed;
+      if (this.isAttacking() && time > this.attackDelay) {
+        this.shoot();
+        this.attackDelay = time + this.attackSpeed;
+      }
     }
   }
 
-  set(position: MapCoordinates): void {
+  prepare(position: MapCoordinates): void {
+    this.placed = false;
+    this.setAlpha(0.5);
     this.setPosition(position.x, position.y);
     this.setRadius();
+  }
+
+  place(): void {
+    this.radius.setVisible(false);
     this.setBullets();
+    this.setAlpha(1);
+    this.placed = true;
   }
 
   setRadius(): void {
@@ -98,7 +108,7 @@ export class Tower extends Phaser.Physics.Arcade.Image {
   }
 
   onTowerRadiusReached(radius: Phaser.GameObjects.Arc, target: Enemy): void {
-    if (!this.isAttacking())
+    if (target.active && !this.isAttacking())
       this.attack(target);
   }
 

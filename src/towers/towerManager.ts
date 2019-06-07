@@ -1,31 +1,44 @@
 import "phaser";
 import { GameScene } from "../gameScene";
+import { Tower } from "./tower";
 import { TowerBasic } from "./types/towerBasic";
 import MapCoordinates from "../interfaces/mapCoordinates";
 
 export class TowerManager {
-  towerTypes: {} = {
-    'basic': {class: TowerBasic, texture: 'tower-basic'}
-  };
+  towerTypes: Map<string, any>;
   towers: Map<string, Phaser.Physics.Arcade.Group>;
+  towerToBePlaced: Tower;
 
   constructor() {
+    this.setTowerTypes();
     this.towers = new Map();
   }
 
+  setTowerTypes(): void {
+    this.towerTypes = new Map();
+    this.towerTypes.set('tower-basic', {class: TowerBasic, texture: 'tower-basic'});
+  }
+
   build(scene: GameScene, position: MapCoordinates, towerType: string): void {
-    let tower;
+    if (this.towerToBePlaced && this.towerToBePlaced.active && !this.towerToBePlaced.placed) {
+      this.towerToBePlaced.place();
+      scene.gamePanel.setBuildMode(false);
+      return;
+    }
   
     if (this.towers.has(towerType))  {
-      tower = this.towers.get(towerType).get();
+      this.towerToBePlaced = this.towers.get(towerType).get();
     } else {
-      this.towers.set(towerType, scene.physics.add.group({ classType: this.towerTypes[towerType].class as any, defaultKey: this.towerTypes[towerType].texture, runChildUpdate: true }));
-      tower = this.towers.get(towerType).get();
+      const group = scene.physics.add.group({ classType: this.towerTypes.get(towerType).class as any, defaultKey: this.towerTypes.get(towerType).texture, runChildUpdate: true });
+      scene.physics.add.overlap(group, scene.mapManager.buildableTerrain, scene.mapManager.occupyTile, null, scene.mapManager);
+
+      this.towers.set(towerType, group);
+      this.towerToBePlaced = this.towers.get(towerType).get();
     }
 
-    scene.mapManager.mapContainer.add(tower);
-    tower.setActive(true);
-    tower.setVisible(true);
-    tower.set(position);
+    scene.mapManager.mapContainer.add(this.towerToBePlaced);
+    this.towerToBePlaced.setActive(true);
+    this.towerToBePlaced.setVisible(true);
+    this.towerToBePlaced.prepare(position);
   }
 }

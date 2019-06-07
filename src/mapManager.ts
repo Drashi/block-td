@@ -1,5 +1,6 @@
 import { CONFIG } from "./config";
 import { GameScene } from "./gameScene";
+import { Tower } from "./towers/tower";
 import MapCoordinates from "./interfaces/mapCoordinates";
 
 export class MapManager {
@@ -14,9 +15,11 @@ export class MapManager {
   activeTile: Phaser.Tilemaps.Tile;
   spawn: Phaser.GameObjects.Sprite;
   base: Phaser.GameObjects.Sprite;
+  occupiedTiles: Phaser.Tilemaps.Tile[];
 
   constructor(scene: GameScene) {
     this.scene = scene;
+    this.occupiedTiles = [];
   }
 
   setMap(): void {
@@ -54,6 +57,7 @@ export class MapManager {
   buildMode(active: boolean): void {
     this.tileTint.setActive(active);
     this.tileTint.setVisible(active);
+    this.scene.gamePanel.setBuildMode(active);
   }
 
   updateTiles(): void {
@@ -68,20 +72,23 @@ export class MapManager {
     const tileX = this.map.tileToWorldX(pointerTileX) - this.mapContainer.x;
     const tileY = this.map.tileToWorldY(pointerTileY) - this.mapContainer.y;
 
-    const hasTile = this.map.hasTileAtWorldXY(x, y);
+    const isTileOccupied = !(this.map.hasTileAtWorldXY(x, y) && !this.occupiedTiles.includes(this.map.getTileAt(pointerTileX, pointerTileY)));
 
-    if (hasTile && this.scene.input.manager.activePointer.isDown && this.mapBounds.contains(this.scene.input.activePointer.x, this.scene.input.activePointer.y)) {
-      this.activeTile = this.map.getTileAt(pointerTileX, pointerTileY);
+    if (!isTileOccupied && this.scene.input.manager.activePointer.isDown && this.mapBounds.contains(this.scene.input.activePointer.x, this.scene.input.activePointer.y)) {
+      const activeTile = this.map.getTileAt(pointerTileX, pointerTileY);
+      this.activeTile = activeTile;
       this.tileTint.setPosition(tileX + this.tileTint.width / 2, tileY + this.tileTint.height / 2);
       this.buildMode(true);
     } else if (this.mapBounds.contains(this.scene.input.activePointer.x, this.scene.input.activePointer.y)) {
-      this.tileMarker.lineStyle(2, (hasTile ? 0x00ff00 : 0xff0000), 1);
+      this.tileMarker.lineStyle(2, (!isTileOccupied ? 0x00ff00 : 0xff0000), 1);
       this.tileMarker.strokeRect(tileX, tileY, this.map.tileWidth, this.map.tileHeight);
-    } else if (this.scene.input.manager.activePointer.isDown) {
-      this.buildMode(false);
     }
   }
 
+  occupyTile(tower: Tower, tile: any): void {
+    if (tower.placed && !this.occupiedTiles.includes(tile))
+      this.occupiedTiles.push(tile);
+  }
 
   getTilePosition(x: number, y: number): MapCoordinates {
     return {
