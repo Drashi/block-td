@@ -58,7 +58,7 @@ export class MapManager {
 
     this.mapContainer.add([this.mapBounds, this.spawn, this.base, this.tileMarker, this.tileTint]);
     this.scene.add.existing(this.mapContainer);
-    this.mapContainer.setDepth(1);
+    this.mapContainer.setDepth(0);
   }
 
   buildMode(active: boolean): void {

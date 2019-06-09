@@ -23,7 +23,7 @@ export class Tower extends Phaser.Physics.Arcade.Image {
   constructor(scene: GameScene, position: MapCoordinates, type: string) {
     super(scene, position.x, position.y, type);
     this.setDepth(1);
-    this.setOrigin(0, 0);
+    this.setOrigin(0);
     scene.add.existing(this);
     scene.physics.add.existing(this);
   }
@@ -60,10 +60,17 @@ export class Tower extends Phaser.Physics.Arcade.Image {
   }
 
   setRadius(): void {
-    const center = this.getCenter();
-    this.radius = this.scene.add.circle(center.x, center.y, this.radiusSize, 0x6666, 0.5);
-    this.scene.physics.add.existing(this.radius);
+    if (!this.radius) {
+      this.radius = this.scene.add.circle(this.x + this.width / 2, this.y + this.width / 2, this.radiusSize, 0x6666, 0.5);
+      this.scene.physics.add.existing(this.radius);
+      this.scene.mapManager.mapContainer.add(this.radius);
+    } else {
+      this.radius.setRadius(this.radiusSize);
+      this.radius.setPosition(this.x + this.width / 2, this.y + this.width / 2);
+    }
+
     this.radius.body.setCircle(this.radiusSize, -(this.radiusSize / 2), -(this.radiusSize / 2));
+    this.radius.setVisible(true);
   }
 
   getBullets(): Phaser.Physics.Arcade.Group {
