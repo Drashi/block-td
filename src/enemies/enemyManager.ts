@@ -7,38 +7,39 @@ export class EnemyManager {
     'phaserguy': {class: EnemyPhaserguy, texture: 'phaserguy'}
   };
 
+  scene: GameScene;
   enemies: Map<string, Phaser.Physics.Arcade.Group>;
   spawnedEnemies: number;
   spawnInterval: number;
 
-  constructor() {
+  constructor(scene: GameScene) {
     this.enemies = new Map();
+    this.scene = scene;
   }
 
-  spawnEnemy(scene: GameScene, enemyType: string): void {
+  spawnEnemy(enemyType: string): void {
     let enemy;
   
     if (this.enemies.has(enemyType))  {
       enemy = this.enemies.get(enemyType).get();
     } else {
-      this.enemies.set(enemyType, scene.physics.add.group({ classType: this.enemyTypes[enemyType].class as any, defaultKey: this.enemyTypes[enemyType].texture, runChildUpdate: true }));
+      const group = this.scene.physics.add.group({ classType: this.enemyTypes[enemyType].class as any, defaultKey: this.enemyTypes[enemyType].texture, runChildUpdate: true });
+      this.enemies.set(enemyType, group);
       enemy = this.enemies.get(enemyType).get();
     }
 
-    scene.mapManager.mapContainer.add(enemy);
-    const spawnPosition = scene.mapManager.getTilePosition(scene.mapManager.spawn.x, scene.mapManager.spawn.y);
-    const basePosition = scene.mapManager.getTilePosition(scene.mapManager.base.x, scene.mapManager.base.y);
-    enemy.set(spawnPosition, basePosition, scene.pathFinder);
+    this.scene.mapManager.mapContainer.add(enemy);
+    enemy.set();
   }
 
-  startWave(scene: GameScene): void {
-    this.spawnedEnemies = 0;
-    this.spawnInterval = window.setInterval(() => {
-      if (this.spawnedEnemies < 10) {
-        this.spawnEnemy(scene, 'phaserguy');
-        this.spawnedEnemies++;
+  startWave(): void {
+    let spawnedEnemies = 0;
+    const spawnInterval = window.setInterval(() => {
+      if (spawnedEnemies < 10) {
+        spawnedEnemies++;
+        this.spawnEnemy('phaserguy');
       } else {
-        clearInterval(this.spawnInterval);
+        clearInterval(spawnInterval);
       }
     }, 1000);
   }

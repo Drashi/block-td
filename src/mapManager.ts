@@ -15,6 +15,8 @@ export class MapManager {
   activeTile: Phaser.Tilemaps.Tile;
   spawn: Phaser.GameObjects.Sprite;
   base: Phaser.GameObjects.Sprite;
+  spawnPosition: MapCoordinates;
+  basePosition: MapCoordinates;
   occupiedTiles: Phaser.Tilemaps.Tile[];
 
   constructor(scene: GameScene) {
@@ -42,6 +44,9 @@ export class MapManager {
     this.spawn = this.map.createFromObjects("Spawn", 50, {key: 'spawn'})[0];
     this.base = this.map.createFromObjects("Base", 40, {key: 'base'})[0];
     this.scene.physics.add.existing(this.base);
+
+    this.spawnPosition = this.getTilePosition(this.spawn.x, this.spawn.y);
+    this.basePosition = this.getTilePosition(this.base.x, this.base.y);
 
     this.tileMarker = this.scene.add.graphics();
     this.tileMarker.lineStyle(2, 0x000000, 1);

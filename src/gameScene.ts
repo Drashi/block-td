@@ -45,7 +45,7 @@ export class GameScene extends Phaser.Scene {
     this.mapManager.setMap();
 
     this.pathFinder = new PathFinder(this);
-    this.enemyManager = new EnemyManager();
+    this.enemyManager = new EnemyManager(this);
     this.towerManager = new TowerManager();
 
     this.gamePanel = new GamePanel(this, CONFIG.BORDER_SIZE * 2 + this.mapManager.map.widthInPixels, CONFIG.BORDER_SIZE);

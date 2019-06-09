@@ -4,6 +4,8 @@ import MapCoordinates from '../interfaces/mapCoordinates';
 
 export class Enemy extends Phaser.Physics.Arcade.Image {
   scene: GameScene;
+  initialHealth: number;
+  initialSpeed: number;
   health: number;
   speed: number;
 
@@ -17,17 +19,30 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
     this.scene = scene;
   }
 
-  set(spawnPosition: MapCoordinates, basePosition: MapCoordinates): void {
-    this.setPosition(spawnPosition.x, spawnPosition.y);
-    this.scene.pathFinder.calculatePosition(spawnPosition, basePosition, this.move);
+  init(): void {
+    this.health = this.initialHealth;
+    this.speed = this.initialSpeed;
+    this.setPosition(this.scene.mapManager.spawnPosition.x, this.scene.mapManager.spawnPosition.y);
+  }
+
+  set(): void {
+    this.init();
+    this.scene.pathFinder.calculatePosition(this.scene.mapManager.spawnPosition, this.scene.mapManager.basePosition, this.move);
     this.setActive(true);
     this.setVisible(true);
+  }
+
+  reset(): void {
+    this.setActive(false);
+    this.setVisible(false);
+    this.scene.tweens.killTweensOf(this);
+    this.init();
   }
 
   onHit(damage: number) {
     this.health -= damage;
     if (!this.isAlive())
-      this.destroy();
+      this.reset();
   }
 
   isAlive(): boolean {
@@ -58,10 +73,8 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
     this.scene.physics.overlap(this, this.scene.mapManager.base, this.onBaseReached, null, this);
   }
 
-  onBaseReached(enemy: Enemy): void {
-    if (enemy.active) {
-      enemy.setActive(false);
-      enemy.setVisible(false);
-    }
+  onBaseReached(): void {
+    if (this.active)
+      this.reset();
   }
 }
