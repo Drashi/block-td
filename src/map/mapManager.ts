@@ -1,7 +1,7 @@
-import { CONFIG } from "./config";
-import { GameScene } from "./gameScene";
-import { Tower } from "./towers/tower";
-import MapCoordinates from "./interfaces/mapCoordinates";
+import { CONFIG } from "../config";
+import { GameScene } from "../scenes/gameScene";
+import { Tower } from "../towers/tower";
+import MapCoordinates from "../util/interfaces/mapCoordinates";
 
 export class MapManager {
   scene: GameScene;

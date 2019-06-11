@@ -1,5 +1,5 @@
 import "phaser";
-import { GameScene } from "../../gameScene";
+import { GameScene } from "../../scenes/gameScene";
 import { Bullet } from './bullet';
 import { BulletBasic } from './types/bulletBasic';
 

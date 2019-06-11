@@ -1,5 +1,5 @@
 import "phaser";
-import { GameScene } from "../../gameScene";
+import { GameScene } from "../../scenes/gameScene";
 
 export class Bullet extends Phaser.Physics.Arcade.Image {
   scene: GameScene;

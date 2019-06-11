@@ -1,9 +1,9 @@
 import "phaser";
-import { GameScene } from '../gameScene';
+import { GameScene } from '../scenes/gameScene';
 import { Enemy } from '../enemies/enemy';
 import { BulletManager } from './bullets/bulletManager';
 import { Bullet } from './bullets/bullet';
-import MapCoordinates from '../interfaces/mapCoordinates';
+import MapCoordinates from '../util/interfaces/mapCoordinates';
 
 export class Tower extends Phaser.Physics.Arcade.Image {
   scene: GameScene;

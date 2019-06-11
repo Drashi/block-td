@@ -1,6 +1,6 @@
 import * as EasyStar from "easystarjs";
-import { GameScene } from "./gameScene";
-import MapCoordinates from './interfaces/mapCoordinates';
+import { GameScene } from "../scenes/gameScene";
+import MapCoordinates from '../util/interfaces/mapCoordinates';
 
 export class PathFinder extends EasyStar.js {
   scene: GameScene;

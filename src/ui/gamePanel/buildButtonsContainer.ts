@@ -1,5 +1,5 @@
 import "phaser";
-import { GameScene } from "../../gameScene";
+import { GameScene } from "../../scenes/gameScene";
 import { BuildButton } from "./BuildButton";
 
 export class BuildButtonsContainer extends Phaser.GameObjects.Container {

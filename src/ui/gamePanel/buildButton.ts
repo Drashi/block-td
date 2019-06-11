@@ -1,5 +1,5 @@
 import "phaser";
-import { GameScene } from "../../gameScene";
+import { GameScene } from "../../scenes/gameScene";
 
 export class BuildButton extends Phaser.GameObjects.Image {
   constructor(scene: GameScene, x: number, y: number, type: string) {

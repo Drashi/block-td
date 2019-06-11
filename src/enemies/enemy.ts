@@ -1,6 +1,6 @@
 import "phaser";
-import { GameScene } from "../gameScene";
-import MapCoordinates from '../interfaces/mapCoordinates';
+import { GameScene } from "../scenes/gameScene";
+import MapCoordinates from '../util/interfaces/mapCoordinates';
 
 export class Enemy extends Phaser.Physics.Arcade.Image {
   scene: GameScene;
@@ -27,7 +27,7 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
 
   set(): void {
     this.init();
-    this.scene.pathFinder.calculatePosition(this.scene.mapManager.spawnPosition, this.scene.mapManager.basePosition, this.move);
+    this.scene.enemyManager.pathFinder.calculatePosition(this.scene.mapManager.spawnPosition, this.scene.mapManager.basePosition, this.move);
     this.setActive(true);
     this.setVisible(true);
   }

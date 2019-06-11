@@ -1,8 +1,8 @@
 import "phaser";
-import { GameScene } from "../gameScene";
+import { GameScene } from "../scenes/gameScene";
 import { Tower } from "./tower";
 import { TowerBasic } from "./types/towerBasic";
-import MapCoordinates from "../interfaces/mapCoordinates";
+import MapCoordinates from "../util/interfaces/mapCoordinates";
 
 export class TowerManager {
   towerTypes: Map<string, any>;

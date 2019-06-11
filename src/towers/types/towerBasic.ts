@@ -1,7 +1,7 @@
 import "phaser";
-import { GameScene } from "../../gameScene";
+import { GameScene } from "../../scenes/gameScene";
 import { Tower } from '../tower';
-import MapCoordinates from '../../interfaces/mapCoordinates';
+import MapCoordinates from '../../util/interfaces/mapCoordinates';
 
 export class TowerBasic extends Tower {
   name: string = 'tower-basic';

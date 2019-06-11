@@ -1,6 +1,6 @@
 import "phaser";
 import { CONFIG } from "../../config";
-import { GameScene } from "../../gameScene";
+import { GameScene } from "../../scenes/gameScene";
 import { StartWaveButton } from "./startWaveButton";
 import { BuildButtonsContainer } from "./buildButtonsContainer";
 

@@ -1,15 +1,13 @@
 import "phaser";
-import { CONFIG } from "./config";
-import { MapManager } from "./mapManager";
-import { PathFinder } from "./pathFinder";
-import { EnemyManager } from "./enemies/enemyManager";
-import { TowerManager } from "./towers/towerManager";
-import { GamePanel } from "./ui/gamePanel/gamePanel";
+import { CONFIG } from "../config";
+import { MapManager } from "../map/mapManager";
+import { EnemyManager } from "../enemies/enemyManager";
+import { TowerManager } from "../towers/towerManager";
+import { GamePanel } from "../ui/gamePanel/gamePanel";
 
 export class GameScene extends Phaser.Scene {
   mapManager: MapManager;
   gamePanel: GamePanel;
-  pathFinder: PathFinder;
   enemyManager: EnemyManager;
   towerManager: TowerManager;
 
@@ -44,7 +42,6 @@ export class GameScene extends Phaser.Scene {
     this.mapManager = new MapManager(this);
     this.mapManager.setMap();
 
-    this.pathFinder = new PathFinder(this);
     this.enemyManager = new EnemyManager(this);
     this.towerManager = new TowerManager();
 

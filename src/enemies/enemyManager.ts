@@ -1,5 +1,6 @@
 import "phaser";
-import { GameScene } from "../gameScene";
+import { GameScene } from "../scenes/gameScene";
+import { PathFinder } from "./pathFinder";
 import { EnemyPhaserguy } from "./types/enemyPhaserguy";
 
 export class EnemyManager {
@@ -8,11 +9,13 @@ export class EnemyManager {
   };
 
   scene: GameScene;
+  pathFinder: PathFinder;
   enemies: Map<string, Phaser.Physics.Arcade.Group>;
   spawnedEnemies: number;
   spawnInterval: number;
 
   constructor(scene: GameScene) {
+    this.pathFinder = new PathFinder(scene);
     this.enemies = new Map();
     this.scene = scene;
   }
