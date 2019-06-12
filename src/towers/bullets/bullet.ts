@@ -9,6 +9,10 @@ export class Bullet extends Phaser.Physics.Arcade.Image {
   dx: number = 0;
   dy: number = 0;
   lifespan = 0;
+  bulletParticles: Phaser.GameObjects.Particles.ParticleEmitter;
+  bulletParticlesConfig: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig;
+  explosionParticles: Phaser.GameObjects.Particles.ParticleEmitter;
+  explosionParticlesConfig: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig;
 
   constructor(scene: GameScene, x: number, y: number, type: string, frame?: string | number) {
     super(scene, x, y, type, frame);
@@ -16,7 +20,20 @@ export class Bullet extends Phaser.Physics.Arcade.Image {
     this.setOrigin(0, 0);
     scene.add.existing(this);
     scene.physics.add.existing(this);
+    this.body.setCircle(this.width / 2, 0, 0);
     this.scene = scene;
+  }
+
+  setBulletParticles(particleManager: Phaser.GameObjects.Particles.ParticleEmitterManager): void {
+    if (!this.bulletParticles)
+      this.bulletParticles = particleManager.createEmitter(this.bulletParticlesConfig);
+    else
+      this.bulletParticles.start();
+  }
+
+  setExplosionParticles(particleManager: Phaser.GameObjects.Particles.ParticleEmitterManager): void {
+    if (!this.explosionParticles)
+      this.explosionParticles = particleManager.createEmitter(this.explosionParticlesConfig);
   }
 
   fire(x: number, y: number, angle: number, radius: number): void {
@@ -35,16 +52,14 @@ export class Bullet extends Phaser.Physics.Arcade.Image {
     this.damage = damage;
   }
 
-  update(time: any, delta: any): void { 
+  update(time: any, delta: any): void {
     this.lifespan -= delta;
  
     this.x += this.dx * (this.speed * delta);
     this.y += this.dy * (this.speed * delta);
 
-    if (this.lifespan <= 0 || this.isOutOfMap()) {
-      this.setActive(false);
-      this.setVisible(false);
-    }
+    if (this.lifespan <= 0 || this.isOutOfMap())
+      this.killBullet();
   }
 
   isOutOfMap() {
@@ -60,5 +75,16 @@ export class Bullet extends Phaser.Physics.Arcade.Image {
             Phaser.Geom.Intersects.LineToRectangle(mapBounds.right, bulletBounds) ||
             Phaser.Geom.Intersects.LineToRectangle(mapBounds.bottom, bulletBounds) ||
             Phaser.Geom.Intersects.LineToRectangle(mapBounds.left, bulletBounds));
+  }
+
+  killBullet(): void {
+    this.bulletParticles.stop();
+    this.setActive(false);
+    this.setVisible(false);
+  }
+
+  onHit(): void {
+    this.explosionParticles.explode(10, this.x + 16, this.y + 16);
+    this.killBullet();
   }
 }

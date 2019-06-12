@@ -27,6 +27,7 @@ export class GameScene extends Phaser.Scene {
     this.load.image('floating-eye', 'assets/enemies/floating-eye.png');
     this.load.image('tower-basic', 'assets/towers/tower-basic.png');
     this.load.image('bullet-basic', 'assets/bullets/bullet-basic.png');
+    this.load.image('particle-blue', 'assets/particles/particle-blue.png');
 
     this.loadGamePanelAssets();
   }

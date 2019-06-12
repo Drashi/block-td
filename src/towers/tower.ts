@@ -124,8 +124,7 @@ export class Tower extends Phaser.Physics.Arcade.Image {
   onEnemyHit(enemy: Enemy, bullet: Bullet): void {
     if (bullet.active) {
       enemy.onHit(bullet.damage);
-      bullet.setActive(false);
-      bullet.setVisible(false);
+      bullet.onHit();
     }
   }
 }
