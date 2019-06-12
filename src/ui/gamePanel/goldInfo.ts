@@ -1,16 +1,16 @@
 import "phaser";
 import { GameScene } from "../../scenes/gameScene";
 
-export class GoldCounter extends Phaser.GameObjects.Container {
+export class GoldInfo extends Phaser.GameObjects.Container {
   scene: GameScene;
-  counter: number = 0;
+  counter: number;
   icon: Phaser.GameObjects.Image;
   text: Phaser.GameObjects.Text;
 
-  constructor(scene: GameScene, x: number, y: number) {
+  constructor(scene: GameScene, x: number, y: number, initialValue: number) {
     super(scene, x, y);
     this.scene = scene;
-    this.counter = scene.gold;
+    this.counter = initialValue;
 
     this.icon = new Phaser.GameObjects.Image(scene, 0, 0, 'icon-gold');
     this.icon.setOrigin(0);
@@ -26,8 +26,8 @@ export class GoldCounter extends Phaser.GameObjects.Container {
     scene.add.existing(this);
   }
 
-  updateCounter(): void {
-    this.counter = this.scene.gold;
+  updateCounterValue(value: number): void {
+    this.counter = value;
     this.text.setText(this.counter.toString());
   }
 }
