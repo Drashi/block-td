@@ -11,6 +11,7 @@ export class Tower extends Phaser.Physics.Arcade.Image {
   damage: number;
   attackSpeed: number;
   radiusSize: number;
+  cost: number;
   placed: boolean = false;
   attacking: boolean = false;
   attackDelay: number = 0;
@@ -57,6 +58,7 @@ export class Tower extends Phaser.Physics.Arcade.Image {
     this.setBullets();
     this.setAlpha(1);
     this.placed = true;
+    this.scene.gold -= this.cost;
   }
 
   setRadius(): void {

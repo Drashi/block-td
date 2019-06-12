@@ -10,6 +10,7 @@ export class GameScene extends Phaser.Scene {
   gamePanel: GamePanel;
   enemyManager: EnemyManager;
   towerManager: TowerManager;
+  gold: number;
 
   constructor() {
     super({
@@ -32,9 +33,12 @@ export class GameScene extends Phaser.Scene {
 
   loadGamePanelAssets(): void {
     this.load.image('button-start-wave', 'assets/ui/game-panel/button-start-wave.png');
+    this.load.image('icon-gold', 'assets/ui/game-panel/icon-gold.png');
   }
 
   create(): void {
+    this.gold = CONFIG.STARTING_GOLD;
+
     const background = this.add.image(0, 0, 'background');
     background.setPosition(0 + background.width / 2, 0 + background.height / 2);
     background.setDepth(1);
@@ -50,5 +54,6 @@ export class GameScene extends Phaser.Scene {
 
   update(time: any, delta: any): void {
     this.mapManager.updateTiles();
+    this.gamePanel.updatePanel();
   }
 }

@@ -6,6 +6,7 @@ import MapCoordinates from '../../util/interfaces/mapCoordinates';
 export class TowerBasic extends Tower {
   name: string = 'tower-basic';
   damage: number = 10;
+  cost: number = 20;
   attackSpeed: number = 200;
   radiusSize: number = 200;
   bulletType: string = 'basic';

@@ -8,6 +8,7 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
   initialSpeed: number;
   health: number;
   speed: number;
+  value: number;
   lastPosition: MapCoordinates;
 
   constructor(scene: GameScene, x: number, y: number, type: string) {
@@ -44,8 +45,10 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
 
   onHit(damage: number) {
     this.health -= damage;
-    if (!this.isAlive())
+    if (!this.isAlive()) {
       this.reset();
+      this.scene.gold += this.value;
+    }
   }
 
   isAlive(): boolean {
