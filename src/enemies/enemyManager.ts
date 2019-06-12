@@ -1,11 +1,11 @@
 import "phaser";
 import { GameScene } from "../scenes/gameScene";
 import { PathFinder } from "./pathFinder";
-import { EnemyPhaserguy } from "./types/enemyPhaserguy";
+import { EnemyFloatingEye } from "./types/enemyFloatingEye";
 
 export class EnemyManager {
   enemyTypes: {} = {
-    'phaserguy': {class: EnemyPhaserguy, texture: 'phaserguy'}
+    'floating-eye': {class: EnemyFloatingEye, texture: 'floating-eye'}
   };
 
   scene: GameScene;
@@ -40,7 +40,7 @@ export class EnemyManager {
     const spawnInterval = window.setInterval(() => {
       if (spawnedEnemies < 10) {
         spawnedEnemies++;
-        this.spawnEnemy('phaserguy');
+        this.spawnEnemy('floating-eye');
       } else {
         clearInterval(spawnInterval);
       }

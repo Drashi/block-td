@@ -8,21 +8,24 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
   initialSpeed: number;
   health: number;
   speed: number;
+  lastPosition: MapCoordinates;
 
   constructor(scene: GameScene, x: number, y: number, type: string) {
     super(scene, x, y, type);
+    this.setScale(0.5);
     this.setDepth(1);
-    this.setOrigin(0, 0.5);
+    this.setOrigin(0.5);
     scene.add.existing(this);
     scene.physics.add.existing(this);
-
+    this.body.setCircle(this.width / 2, 0, 0);
     this.scene = scene;
   }
 
   init(): void {
     this.health = this.initialHealth;
     this.speed = this.initialSpeed;
-    this.setPosition(this.scene.mapManager.spawnPosition.x, this.scene.mapManager.spawnPosition.y);
+    this.setPosition(this.scene.mapManager.spawnPosition.x + this.displayWidth / 2, this.scene.mapManager.spawnPosition.y + this.displayHeight / 2);
+    this.lastPosition = {x: this.x, y: this.y};
   }
 
   set(): void {
@@ -57,8 +60,8 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
       const ey = path[i+1].y;
 
       tweens.push({
-        x: {value: ex * this.scene.mapManager.map.tileWidth},
-        y: {value: ey * this.scene.mapManager.map.tileHeight}
+        x: {value: ex * this.scene.mapManager.map.tileWidth + this.displayWidth / 2},
+        y: {value: ey * this.scene.mapManager.map.tileHeight + this.displayHeight / 2}
       });
     }
 
@@ -71,6 +74,8 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
 
   update(): void {
     this.scene.physics.overlap(this, this.scene.mapManager.base, this.onBaseReached, null, this);
+    this.rotation = Phaser.Math.Angle.Between(this.lastPosition.x, this.lastPosition.y, this.x, this.y);
+    this.lastPosition = {x: this.x, y: this.y};
   }
 
   onBaseReached(): void {
