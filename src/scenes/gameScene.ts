@@ -1,4 +1,5 @@
 import "phaser";
+import store from '../store';
 import { CONFIG } from "../config";
 import { MapManager } from "../map/mapManager";
 import { EnemyManager } from "../enemies/enemyManager";
@@ -16,6 +17,11 @@ export class GameScene extends Phaser.Scene {
   constructor() {
     super({
       key: "GameScene"
+    });
+
+    store.subscribe(() => {
+      if (store.getState().gameStarted && !store.getState().gameOver)
+        this.scene.restart();
     });
   }
 
@@ -59,5 +65,10 @@ export class GameScene extends Phaser.Scene {
   update(time: any, delta: any): void {
     this.mapManager.updateTiles();
     this.gamePanel.updatePanel();
+
+    if (this.health <= 0) {
+      this.scene.pause();
+      store.dispatch({ type: 'GAME_OVER'});
+    }
   }
 }

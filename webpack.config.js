@@ -9,6 +9,16 @@ module.exports = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.png$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            outputPath: 'assets/react-ui',
+            name:'[name].[ext]',
+          }
+        }
       }
     ]
   },
