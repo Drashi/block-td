@@ -1,33 +1,21 @@
 import "phaser";
 import { GameScene } from "../../scenes/gameScene";
+import { IconCounter } from "./iconCounter";
 
-export class GoldInfo extends Phaser.GameObjects.Container {
-  scene: GameScene;
-  counter: number;
-  icon: Phaser.GameObjects.Image;
-  text: Phaser.GameObjects.Text;
-
+export class GoldInfo extends IconCounter {
   constructor(scene: GameScene, x: number, y: number, initialValue: number) {
-    super(scene, x, y);
-    this.scene = scene;
-    this.counter = initialValue;
-
-    this.icon = new Phaser.GameObjects.Image(scene, 0, 0, 'icon-gold');
-    this.icon.setOrigin(0);
-    this.icon.setScale(0.8);
-
-    this.text = new Phaser.GameObjects.Text(scene, this.icon.width + 10, 0, this.counter.toString(), {
-      fontFamily: '"Open-Sans"',
-      fontSize: '21px'
-    });
-    this.text.setOrigin(0.18);
-
-    this.add([this.icon, this.text]);
-    scene.add.existing(this);
+    super(scene, x, y, initialValue, 'icon-gold');
   }
 
-  updateCounterValue(value: number): void {
-    this.counter = value;
-    this.text.setText(this.counter.toString());
+  updateGoldCounter(value: number) {
+    this.updateCounterValue(value);
+    this.updateTextSize();
+  }
+
+  updateTextSize(): void {
+    if (this.counter > 999 && this.text.style.fontSize !== '18px')
+      this.text.setFontSize(18);
+    else if (this.counter < 1000 && this.text.style.fontSize !== '20px')
+      this.text.setFontSize(20);
   }
 }

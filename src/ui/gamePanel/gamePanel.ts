@@ -3,12 +3,14 @@ import { CONFIG } from "../../config";
 import { GameScene } from "../../scenes/gameScene";
 import { StartWaveButton } from "./startWaveButton";
 import { BuildButtonsContainer } from "./buildButtonsContainer";
+import { HealthInfo } from "./healthInfo";
 import { GoldInfo } from "./goldInfo";
 
 export class GamePanel extends Phaser.GameObjects.Container {
   scene: GameScene;
   startWaveButton: StartWaveButton;
   buildButtonsContainer: BuildButtonsContainer;
+  healthInfo: HealthInfo;
   goldInfo: GoldInfo;
 
   constructor(scene: GameScene, x: number, y: number) {
@@ -19,9 +21,10 @@ export class GamePanel extends Phaser.GameObjects.Container {
 
     this.startWaveButton = new StartWaveButton(scene, CONFIG.GAME_PANEL_WIDTH / 2, 14);
     this.buildButtonsContainer = new BuildButtonsContainer(scene, 14, 80, 3, 13);
-    this.goldInfo = new GoldInfo(scene, 40, CONFIG.GAME_PANEL_HEIGHT - 32, this.scene.gold);
+    this.healthInfo = new HealthInfo(scene, 20, CONFIG.GAME_PANEL_HEIGHT - 32, this.scene.health);
+    this.goldInfo = new GoldInfo(scene, 75, CONFIG.GAME_PANEL_HEIGHT - 32, this.scene.gold);
 
-    this.add([this.startWaveButton, this.buildButtonsContainer, this.goldInfo]);
+    this.add([this.startWaveButton, this.buildButtonsContainer, this.healthInfo, this.goldInfo]);
   }
 
   setBuildMode(active: boolean): void {
@@ -37,7 +40,11 @@ export class GamePanel extends Phaser.GameObjects.Container {
   }
 
   updatePanel(): void {
-    this.goldInfo.updateCounterValue(this.scene.gold);
+    const health = (this.scene.health < 0 ? 0 : this.scene.health);
+    const gold = this.scene.gold;
+
+    this.healthInfo.updateCounterValue(health);
+    this.goldInfo.updateGoldCounter(gold);
     this.buildButtonsContainer.updateButtons();
   }
 }

@@ -10,6 +10,7 @@ export class GameScene extends Phaser.Scene {
   gamePanel: GamePanel;
   enemyManager: EnemyManager;
   towerManager: TowerManager;
+  health: number;
   gold: number;
 
   constructor() {
@@ -34,10 +35,12 @@ export class GameScene extends Phaser.Scene {
 
   loadGamePanelAssets(): void {
     this.load.image('button-start-wave', 'assets/ui/game-panel/button-start-wave.png');
+    this.load.image('icon-health', 'assets/ui/game-panel/icon-health.png');
     this.load.image('icon-gold', 'assets/ui/game-panel/icon-gold.png');
   }
 
   create(): void {
+    this.health = CONFIG.STARTING_HEALTH;
     this.gold = CONFIG.STARTING_GOLD;
 
     const background = this.add.image(0, 0, 'background');

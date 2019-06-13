@@ -82,7 +82,9 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
   }
 
   onBaseReached(): void {
-    if (this.active)
+    if (this.active) {
       this.reset();
+      this.scene.health--;
+    }
   }
 }
