@@ -1,5 +1,6 @@
 import * as React from "react";
 import "phaser";
+import { BootScene } from "./scenes/bootScene";
 import { GameScene } from "./scenes/gameScene";
 import { CONFIG } from "./config";
 
@@ -18,7 +19,7 @@ export default class Game extends React.Component<GameProps, any> {
           debug: false
         }
       },
-      scene: [new GameScene()],
+      scene: [new BootScene(), new GameScene()],
       backgroundColor: "#18216D"
     };
 

@@ -15,7 +15,7 @@ module.exports = {
         use: {
           loader: 'file-loader',
           options: {
-            outputPath: 'assets/react-ui',
+            outputPath: 'assets/ui/react-ui',
             name:'[name].[ext]',
           }
         }

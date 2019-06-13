@@ -14,8 +14,8 @@ function calculateLeftOffset() {
 
 function UI({ startGame, gameOver }: UIProps) {
   const [leftOffset, setLeftOffset] = React.useState(calculateLeftOffset());
-  const buttonRestart = require('../../assets/react-ui/button-restart.png');
-  const gameOverImage = require('../../assets/react-ui/game-over.png');
+  const buttonRestart = require('../../assets/ui/react-ui/button-restart.png');
+  const gameOverImage = require('../../assets/ui/react-ui/game-over.png');
 
   function handleResize() {
     setLeftOffset(calculateLeftOffset);
