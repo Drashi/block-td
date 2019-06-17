@@ -7,6 +7,16 @@ export class StartWaveButton extends Phaser.GameObjects.Image {
     this.setPosition(x, y + this.height / 2);
     scene.add.existing(this);
     this.setInteractive();
-    this.on('pointerdown', () => scene.enemyManager.startWave(), this);
+    this.on('pointerdown', () => {
+      if (!scene.waveActive)
+        scene.enemyManager.startWave();
+    }, this);
+  }
+
+  updateActive(active: boolean): void {
+    if (active)
+      this.setAlpha(0.5);
+    else
+      this.setAlpha(1);
   }
 }

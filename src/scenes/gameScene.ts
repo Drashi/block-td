@@ -13,6 +13,8 @@ export class GameScene extends Phaser.Scene {
   towerManager: TowerManager;
   health: number;
   gold: number;
+  wave: number;
+  waveActive: boolean;
 
   constructor() {
     super({
@@ -29,6 +31,8 @@ export class GameScene extends Phaser.Scene {
   create(): void {
     this.health = CONFIG.STARTING_HEALTH;
     this.gold = CONFIG.STARTING_GOLD;
+    this.wave = 0;
+    this.waveActive = false;
 
     const background = this.add.image(0, 0, 'background-game');
     background.setPosition(0 + background.width / 2, 0 + background.height / 2);
@@ -47,7 +51,10 @@ export class GameScene extends Phaser.Scene {
     this.mapManager.updateTiles();
     this.gamePanel.updatePanel();
 
-    if (this.health <= 0) {
+    if (this.waveActive)
+      this.enemyManager.updateWave();
+
+    if (this.health <= 0 || this.enemyManager.noWavesLeft()) {
       this.scene.pause();
       store.dispatch({ type: 'GAME_OVER'});
     }

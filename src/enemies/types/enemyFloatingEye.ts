@@ -6,7 +6,7 @@ export class EnemyFloatingEye extends Enemy {
   name: string = 'floating-eye';
   initialHealth: number = 100;
   initialSpeed: number = 10;
-  value: number = 10;
+  value: number = 5;
 
   constructor(scene: GameScene, x: number, y: number) {
     super(scene, x, y, 'floating-eye');

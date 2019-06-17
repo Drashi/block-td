@@ -99,6 +99,7 @@ export class BootScene extends Phaser.Scene {
     this.load.image('tileset',  mapAssetsPath + 'gridtiles.png');
     this.load.image('base',  mapAssetsPath + 'base.png');
     this.load.image('spawn',  mapAssetsPath + 'spawn.png');
+    this.load.json('waves', mapAssetsPath + 'waves.json');
   }
 
   loadEnemyAssets(): void {

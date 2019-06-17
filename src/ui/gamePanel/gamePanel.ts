@@ -43,6 +43,7 @@ export class GamePanel extends Phaser.GameObjects.Container {
     const health = (this.scene.health < 0 ? 0 : this.scene.health);
     const gold = this.scene.gold;
 
+    this.startWaveButton.updateActive(this.scene.waveActive);
     this.healthInfo.updateCounterValue(health);
     this.goldInfo.updateGoldCounter(gold);
     this.buildButtonsContainer.updateButtons();
