@@ -20,6 +20,14 @@ export default class Game extends React.Component<GameProps, any> {
           debug: false
         }
       },
+      scale: {
+        mode: Phaser.Scale.FIT,
+        parent: "game",
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: CONFIG.GAME_WIDTH,
+        height: CONFIG.GAME_HEIGHT,
+        max: CONFIG.GAME_WIDTH
+      },
       scene: [new BootScene(), new TitleScene(), new GameScene()],
       backgroundColor: "#18216D"
     };
@@ -32,6 +40,15 @@ export default class Game extends React.Component<GameProps, any> {
   }
 
   render() {
-    return <div id="game" />;
+    return (
+      <div
+        id="game"
+        style={{
+          maxWidth: CONFIG.GAME_WIDTH,
+          maxHeight: CONFIG.GAME_HEIGHT,
+          margin: "auto"
+        }}
+      />
+    );
   }
 }

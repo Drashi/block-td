@@ -21,6 +21,7 @@ class Menu extends React.Component<MenuProps> {
           flexDirection: "column",
           position: "absolute",
           left: leftOffset,
+          top: 0,
           width: CONFIG.GAME_WIDTH,
           height: CONFIG.GAME_HEIGHT
         }}

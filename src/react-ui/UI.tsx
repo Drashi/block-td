@@ -34,7 +34,7 @@ export class UI extends React.Component<UIProps, UIState> {
   }
 
   calculateLeftOffset(): number {
-    return window.innerWidth / 2 - CONFIG.GAME_WIDTH / 2;
+    return window.innerWidth / 2 - CONFIG.GAME_WIDTH / 2 - 18;
   }
 
   onButtonClick = (): void => {
