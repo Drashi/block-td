@@ -2,71 +2,72 @@ import * as React from 'react';
 import { startGame } from '../store/gameReducer';
 import { connect } from "react-redux";
 import { CONFIG } from "../config";
+import Menu from "./Menu";
+import GameOver from "./GameOver";
 
 interface UIProps {
-  startGame: boolean;
-  gameOver: boolean
+  menu: boolean,
+  gameStarted: boolean,
+  gameOver: boolean,
+  startGame: any
 }
 
-function calculateLeftOffset() {
-  return window.innerWidth / 2 - CONFIG.GAME_WIDTH / 2;
-};
+interface UIState {
+  leftOffset: number
+}
 
-function UI({ startGame, gameOver }: UIProps) {
-  const [leftOffset, setLeftOffset] = React.useState(calculateLeftOffset());
-  const buttonRestart = require('../../assets/ui/react-ui/button-restart.png');
-  const gameOverImage = require('../../assets/ui/react-ui/game-over.png');
+export class UI extends React.Component<UIProps, UIState> {
+  constructor(props) {
+    super(props);
 
-  function handleResize() {
-    setLeftOffset(calculateLeftOffset);
+    this.state = {
+      leftOffset: 0
+    }
   }
 
-  React.useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  });
+  componentDidMount(): void {
+    this.setState({ leftOffset: this.calculateLeftOffset() });
 
-  if (!gameOver)
+    window.addEventListener('resize', () => {
+      this.setState({ leftOffset: this.calculateLeftOffset() })
+    });
+  }
+
+  calculateLeftOffset(): number {
+    return window.innerWidth / 2 - CONFIG.GAME_WIDTH / 2;
+  }
+
+  onButtonClick = (): void => {
+    this.props.startGame();
+  }
+
+  render() {
+    const { leftOffset } = this.state;
+    const { menu, gameStarted, gameOver } = this.props;
+
+    if (menu && !gameStarted && !gameOver)
+      return (
+        <Menu leftOffset={leftOffset} onButtonClick={this.onButtonClick}/>
+      )
+    
+    if (gameStarted && gameOver)
+      return (
+        <GameOver leftOffset={leftOffset} onButtonClick={this.onButtonClick}/>
+      )
+
     return null;
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignContent: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        position: "absolute",
-        left: leftOffset,
-        width: CONFIG.GAME_WIDTH,
-        height: CONFIG.GAME_HEIGHT
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          width: CONFIG.GAME_WIDTH,
-          height: CONFIG.GAME_HEIGHT,
-          backgroundColor: "#000000",
-          opacity: "0.5"
-        }}
-      />
-      <img src={ gameOverImage } style={{ alignSelf: "center", marginBottom: 40, zIndex: 1, WebkitUserSelect: "none" }} />
-      <img src={ buttonRestart } style={{ alignSelf: "center", zIndex: 1, WebkitUserSelect: "none" }} onClick={ startGame } />
-    </div>
-  );
+  }
 }
 
-const mapStateToProps = ({ startGame, gameOver }: UIProps) => ({
-  startGame,
-  gameOver
+const mapStateToProps = ({ menu, gameStarted, gameOver }: UIProps) => ({
+  menu,
+  gameStarted,
+  gameOver,
+  startGame
 });
 
-const mapDispatchToProps = {
-  startGame
-};
+const mapDispatchToProps = dispatch => ({
+  startGame: () => dispatch(startGame())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(UI);

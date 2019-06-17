@@ -76,6 +76,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   loadAssets(): void {
+    this.loadUIAssets();
     this.loadMapAssets();
     this.loadEnemyAssets();
     this.loadTowerAssets();
@@ -84,12 +85,18 @@ export class BootScene extends Phaser.Scene {
     this.loadGamePanelAssets();
   }
 
+  loadUIAssets(): void {
+    const uiAssetsPath = 'assets/ui/';
+
+    this.load.image('background-menu',  uiAssetsPath + 'background-menu.png');
+    this.load.image('background-game',  uiAssetsPath + 'background-game.png');
+  }
+
   loadMapAssets(): void {
     const mapAssetsPath = 'assets/map/';
 
     this.load.tilemapTiledJSON('map', mapAssetsPath + 'map.json');
     this.load.image('tileset',  mapAssetsPath + 'gridtiles.png');
-    this.load.image('background',  mapAssetsPath + 'background.png');
     this.load.image('base',  mapAssetsPath + 'base.png');
     this.load.image('spawn',  mapAssetsPath + 'spawn.png');
   }
@@ -127,6 +134,6 @@ export class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.switch('GameScene');
+    this.scene.switch('TitleScene');
   }
 }

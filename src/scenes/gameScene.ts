@@ -20,8 +20,9 @@ export class GameScene extends Phaser.Scene {
     });
 
     store.subscribe(() => {
-      if (store.getState().gameStarted && !store.getState().gameOver)
+      if (this.scene.isPaused() && !store.getState().gameOver) {
         this.scene.restart();
+      }
     });
   }
 
@@ -29,7 +30,7 @@ export class GameScene extends Phaser.Scene {
     this.health = CONFIG.STARTING_HEALTH;
     this.gold = CONFIG.STARTING_GOLD;
 
-    const background = this.add.image(0, 0, 'background');
+    const background = this.add.image(0, 0, 'background-game');
     background.setPosition(0 + background.width / 2, 0 + background.height / 2);
     background.setDepth(1);
 

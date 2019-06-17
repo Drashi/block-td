@@ -9,6 +9,8 @@
   "author": "Drashi",
   "license": "ISC",
   "devDependencies": {
+    "@types/react": "^16.8.20",
+    "@types/react-dom": "^16.8.4",
     "copy-webpack-plugin": "^5.0.3",
     "file-loader": "^4.0.0",
     "phaser": "^3.17.0",
