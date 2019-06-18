@@ -19,7 +19,7 @@ export class GamePanel extends Phaser.GameObjects.Container {
     this.scene = scene;
     scene.add.existing(this);
 
-    this.startWaveButton = new StartWaveButton(scene, CONFIG.GAME_PANEL_WIDTH / 2, 14);
+    this.startWaveButton = new StartWaveButton(scene, CONFIG.GAME_PANEL_WIDTH / 2, 8);
     this.buildButtonsContainer = new BuildButtonsContainer(scene, 14, 80, 3, 13);
     this.healthInfo = new HealthInfo(scene, 20, CONFIG.GAME_PANEL_HEIGHT - 32, this.scene.health);
     this.goldInfo = new GoldInfo(scene, 75, CONFIG.GAME_PANEL_HEIGHT - 32, this.scene.gold);
