@@ -15,7 +15,7 @@ export class GamePanel extends Phaser.GameObjects.Container {
 
   constructor(scene: GameScene, x: number, y: number) {
     super(scene, x, y);
-    this.setDepth(1);
+    this.setDepth(2);
     this.scene = scene;
     scene.add.existing(this);
 

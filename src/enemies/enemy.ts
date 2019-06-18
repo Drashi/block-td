@@ -85,6 +85,7 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
     if (this.active) {
       this.reset();
       this.scene.health--;
+      this.scene.mapManager.base.onHit();
     }
   }
 }

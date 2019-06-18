@@ -125,6 +125,7 @@ export class BootScene extends Phaser.Scene {
     const particleAssetsPath = 'assets/particles/';
 
     this.load.image('particle-blue', particleAssetsPath + 'particle-blue.png');
+    this.load.image('particle-red', particleAssetsPath + 'particle-red.png');
   }
 
   loadGamePanelAssets(): void {

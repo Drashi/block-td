@@ -15,6 +15,7 @@ export class GameScene extends Phaser.Scene {
   gold: number;
   wave: number;
   waveActive: boolean;
+  ending: boolean;
 
   constructor() {
     super({
@@ -29,6 +30,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.input.manager.enabled = true;
+    this.ending = false;
     this.health = CONFIG.STARTING_HEALTH;
     this.gold = CONFIG.STARTING_GOLD;
     this.wave = 0;
@@ -36,7 +39,7 @@ export class GameScene extends Phaser.Scene {
 
     const background = this.add.image(0, 0, 'background-game');
     background.setPosition(0 + background.width / 2, 0 + background.height / 2);
-    background.setDepth(1);
+    background.setDepth(2);
 
     this.mapManager = new MapManager(this);
     this.mapManager.setMap();
@@ -54,9 +57,21 @@ export class GameScene extends Phaser.Scene {
     if (this.waveActive)
       this.enemyManager.updateWave();
 
-    if (this.health <= 0 || this.enemyManager.noWavesLeft()) {
-      this.scene.pause();
-      store.dispatch({ type: 'GAME_OVER'});
+    if (this.health <= 0 && !this.ending) {
+      this.ending = true;
+      this.input.manager.enabled = false;
+      this.mapManager.base.onExplosion();
+      this.time.addEvent({
+        delay: 1000,
+        callback: () => this.endGame(),
+      });
+    } else if (this.enemyManager.noWavesLeft()) {
+      this.endGame();
     }
+  }
+
+  endGame(): void {
+    this.scene.pause();
+    store.dispatch({ type: 'GAME_OVER'});
   }
 }

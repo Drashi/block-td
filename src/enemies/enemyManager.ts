@@ -47,6 +47,7 @@ export class EnemyManager {
       this.scene.waveActive = true;
       this.scene.wave++;
       this.waveProgress = 0;
+      this.scene.mapManager.spawn.setActivity(true);
   
       this.spawnInterval = this.scene.time.addEvent({
         delay: this.currentWave[this.waveProgress].delay,
@@ -69,6 +70,7 @@ export class EnemyManager {
     } else if (this.spawnInterval.getOverallProgress() == 1 && !this.currentWave[this.waveProgress + 1] && this.getActiveEnemiesCount() == 0) {
       this.waveProgress = 0;
       this.scene.waveActive = false;
+      this.scene.mapManager.spawn.setActivity(false);
     }
   }
 

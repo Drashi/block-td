@@ -1,5 +1,7 @@
 import { CONFIG } from "../config";
 import { GameScene } from "../scenes/gameScene";
+import { Spawn } from "./spawn";
+import { Base } from "./base";
 import { Tower } from "../towers/tower";
 import MapCoordinates from "../util/interfaces/mapCoordinates";
 
@@ -13,8 +15,8 @@ export class MapManager {
   tileMarker: Phaser.GameObjects.Graphics;
   tileTint: Phaser.GameObjects.Rectangle;
   activeTile: Phaser.Tilemaps.Tile;
-  spawn: Phaser.GameObjects.Sprite;
-  base: Phaser.GameObjects.Sprite;
+  spawn: Spawn;
+  base: Base;
   spawnPosition: MapCoordinates;
   basePosition: MapCoordinates;
   occupiedTiles: Phaser.Tilemaps.Tile[];
@@ -41,9 +43,8 @@ export class MapManager {
     this.mapBounds = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.map.widthInPixels - 1, this.map.heightInPixels - 1);
     this.mapBounds.setPosition(this.mapBounds.x + this.mapBounds.width / 2, this.mapBounds.y + this.mapBounds.height / 2);
 
-    this.spawn = this.map.createFromObjects("Spawn", 50, {key: 'spawn'})[0];
-    this.base = this.map.createFromObjects("Base", 40, {key: 'base'})[0];
-    this.scene.physics.add.existing(this.base);
+    this.map.findObject("Spawn", (spawn) => this.setSpawn(spawn));
+    this.map.findObject("Base", (base) => this.setBase(base));
 
     this.spawnPosition = this.getTilePosition(this.spawn.x, this.spawn.y);
     this.basePosition = this.getTilePosition(this.base.x, this.base.y);
@@ -59,6 +60,14 @@ export class MapManager {
     this.mapContainer.add([this.mapBounds, this.spawn, this.base, this.tileMarker, this.tileTint]);
     this.scene.add.existing(this.mapContainer);
     this.mapContainer.setDepth(0);
+  }
+
+  setSpawn(spawn: any): void {
+    this.spawn = new Spawn(this.scene, spawn.x, spawn.y);
+  }
+
+  setBase(base: any): void {
+    this.base = new Base(this.scene, base.x, base.y);
   }
 
   buildMode(active: boolean): void {
