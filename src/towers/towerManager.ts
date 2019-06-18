@@ -16,7 +16,7 @@ export class TowerManager {
 
   setTowerTypes(): void {
     this.towerTypes = new Map();
-    this.towerTypes.set('tower-basic', {class: TowerBasic, texture: 'tower-basic', cost: 20});
+    this.towerTypes.set('tower-basic', {class: TowerBasic, texture: 'tower-basic', cost: 50});
   }
 
   build(scene: GameScene, position: MapCoordinates, towerType: string): void {

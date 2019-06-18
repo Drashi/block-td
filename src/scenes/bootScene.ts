@@ -83,6 +83,7 @@ export class BootScene extends Phaser.Scene {
     this.loadBulletAssets();
     this.loadParticleAssets();
     this.loadGamePanelAssets();
+    this.loadAudioAssets();
   }
 
   loadUIAssets(): void {
@@ -132,6 +133,12 @@ export class BootScene extends Phaser.Scene {
     this.load.image('button-start-wave', gamePanelAssetsPath + 'button-start-wave.png');
     this.load.image('icon-health', gamePanelAssetsPath + 'icon-health.png');
     this.load.image('icon-gold', gamePanelAssetsPath + 'icon-gold.png');
+  }
+
+  loadAudioAssets(): void {
+    const audioAssetsPath = 'assets/sound/';
+
+    this.load.audio('tower-basic', audioAssetsPath + '/towers/tower-basic.ogg');
   }
 
   create() {

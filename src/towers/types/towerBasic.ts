@@ -5,11 +5,12 @@ import MapCoordinates from '../../util/interfaces/mapCoordinates';
 
 export class TowerBasic extends Tower {
   name: string = 'tower-basic';
-  damage: number = 5;
-  cost: number = 20;
-  attackSpeed: number = 200;
+  damage: number = 20;
+  cost: number = 50;
+  attackSpeed: number = 250;
   radiusSize: number = 200;
   bulletType: string = 'basic';
+  sound: string = 'tower-basic';
 
   constructor(scene: GameScene, position: MapCoordinates) {
     super(scene, position, 'tower-basic');

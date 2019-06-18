@@ -20,6 +20,7 @@ export class Tower extends Phaser.Physics.Arcade.Image {
   target: Enemy;
   bulletType: string;
   bulletManager: BulletManager;
+  sound: string;
 
   constructor(scene: GameScene, position: MapCoordinates, type: string) {
     super(scene, position.x, position.y, type);
@@ -27,6 +28,7 @@ export class Tower extends Phaser.Physics.Arcade.Image {
     this.setOrigin(0);
     scene.add.existing(this);
     scene.physics.add.existing(this);
+    this.scene = scene;
   }
 
   update(time: any) {
@@ -90,8 +92,10 @@ export class Tower extends Phaser.Physics.Arcade.Image {
 
     const bullet = this.bulletManager.getBullet();
 
-    if (bullet)
+    if (bullet) {
       bullet.fire(towerCenter.x, towerCenter.y, this.attackAngle, this.radiusSize);
+      this.scene.sound.play(this.sound, { volume: 0.05 });
+    }
   }
 
   attack(target: Enemy) {
