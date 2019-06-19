@@ -20,7 +20,7 @@ export class BuildButton extends Phaser.GameObjects.Container {
     this.button.on('pointerdown', () => this.buildTower(scene, type), this);
   
     this.goldInfo = new GoldInfo(scene, 23 + this.button.width / 2, this.button.height + this.button.height / 2 + 15, cost);
-    this.goldInfo.setScale(0.5);
+    this.goldInfo.setScale(0.6);
     this.goldInfo.setPosition(this.goldInfo.x - this.goldInfo.getBounds().width / 2, this.button.height + this.button.height / 2 + 15);
 
     this.add([this.button, this.goldInfo]);
