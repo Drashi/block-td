@@ -1,5 +1,8 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 module.exports = {
   entry: './src/index.tsx',
@@ -27,10 +30,22 @@ module.exports = {
   },
   output: {
     filename: 'app.js',
-    path: path.resolve(__dirname, './dist')
+    path: path.resolve(__dirname, '../dist')
   },
-  mode: 'development',
+  mode: 'production',
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          output: { comments: false }
+        }
+      }),
+    ],
+  },
   plugins: [
-    new CopyPlugin([{ from: 'src/index.html', to: 'index.html' }, { from: 'assets', to: 'assets' }])
+    new HtmlWebpackPlugin({ template: 'index.html' }),
+    new CopyPlugin([{ from: 'assets', to: 'assets' }]),
+    new ImageminPlugin({ test: /\.(jpe?g|png|gif|svg)$/i })
   ]
 };

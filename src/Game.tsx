@@ -10,7 +10,7 @@ export interface GameProps {}
 export default class Game extends React.Component<GameProps, any> {
   componentDidMount() {
     const phaserConfig: Phaser.Types.Core.GameConfig = {
-      title: "Phaser TD",
+      title: "Block TD",
       width: CONFIG.GAME_WIDTH,
       height: CONFIG.GAME_HEIGHT,
       parent: "game",
