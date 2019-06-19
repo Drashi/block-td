@@ -1,0 +1,28 @@
+{
+    "1": [
+        {
+            "enemy": "floating-eye",
+            "count": 20,
+            "delay": 1000
+        }
+    ],
+    "2": [
+        {
+            "enemy": "floating-eye",
+            "count": 10,
+            "delay": 1000
+        },
+        {
+            "enemy": "floating-eye",
+            "count": 10,
+            "delay": 500
+        }
+    ],
+    "3": [
+        {
+            "enemy": "floating-eye",
+            "count": 30,
+            "delay": 500
+        }
+    ]
+}
