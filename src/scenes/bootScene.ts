@@ -139,6 +139,9 @@ export class BootScene extends Phaser.Scene {
   loadAudioAssets(): void {
     const audioAssetsPath = 'assets/sound/';
 
+    this.load.audio('base-hit', audioAssetsPath + '/map/base-hit.ogg');
+    this.load.audio('base-explosion', audioAssetsPath + '/map/base-explosion.ogg');
+    this.load.audio('spawn', audioAssetsPath + '/map/spawn.ogg');
     this.load.audio('tower-basic', audioAssetsPath + '/towers/tower-basic.ogg');
   }
 

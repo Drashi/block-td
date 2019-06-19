@@ -2,6 +2,7 @@ import "phaser";
 import { GameScene } from "../scenes/gameScene";
 
 export class Base extends Phaser.GameObjects.Sprite {
+  scene: GameScene;
   baseParticleManager: Phaser.GameObjects.Particles.ParticleEmitterManager;
   baseParticles: Phaser.GameObjects.Particles.ParticleEmitter;
   baseOnHitParticles: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -35,6 +36,7 @@ export class Base extends Phaser.GameObjects.Sprite {
 
   constructor(scene: GameScene, x: number, y: number) {
     super(scene, x, y, 'base');
+    this.scene = scene;
 
     const offset = {
       x: this.originX * this.displayWidth,
@@ -53,7 +55,10 @@ export class Base extends Phaser.GameObjects.Sprite {
   }
 
   onHit(): void {
-    this.baseOnHitParticles.explode(20, this.x + 10, this.y + 10);
+    if (!this.scene.ending) {
+      this.baseOnHitParticles.explode(20, this.x + 10, this.y + 10);
+      this.scene.sound.play('base-hit');
+    }
   }
 
   onExplosion(): void {
@@ -62,5 +67,6 @@ export class Base extends Phaser.GameObjects.Sprite {
     this.baseOnHitParticles.stop();
     this.baseOnHitParticles.killAll();
     this.baseExplosionParticles.explode(100, this.x + 10, this.y + 10);
+    this.scene.sound.play('base-explosion');
   }
 }

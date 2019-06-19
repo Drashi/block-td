@@ -38,6 +38,7 @@ export class EnemyManager {
 
     this.scene.mapManager.mapContainer.add(enemy);
     enemy.set();
+    this.scene.mapManager.spawn.onSpawn();
   }
 
   startWave(): void {
