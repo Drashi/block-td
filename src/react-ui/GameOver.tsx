@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { CONFIG } from '../config';
+import CanvasProps from "../util/interfaces/canvasProps";
 
 interface GameOverProps {
-  leftOffset: number,
+  canvasProps: CanvasProps,
   onButtonClick: any
 }
 
 class GameOver extends React.Component<GameOverProps> {
   render() {
-    const { leftOffset, onButtonClick } = this.props;
+    const { canvasProps, onButtonClick } = this.props;
     const gameOverImage = require('../../assets/ui/react-ui/game-over.png');
     const buttonRestart = require('../../assets/ui/react-ui/button-restart.png');
 
@@ -20,24 +20,44 @@ class GameOver extends React.Component<GameOverProps> {
           justifyContent: "center",
           flexDirection: "column",
           position: "absolute",
-          left: leftOffset,
           top: 0,
-          width: CONFIG.GAME_WIDTH,
-          height: CONFIG.GAME_HEIGHT
+          width: canvasProps.width,
+          height: canvasProps.height,
+          marginTop: canvasProps.margin.top,
+          marginLeft: canvasProps.margin.left
         }}
       >
         <div
           style={{
             position: "absolute",
-            left: 0,
-            width: CONFIG.GAME_WIDTH,
-            height: CONFIG.GAME_HEIGHT,
+            width: canvasProps.width,
+            height: canvasProps.height,
+            marginLeft: canvasProps.margin.left,
             backgroundColor: "#000000",
             opacity: 0.5
           }}
-         />
-        <img src={ gameOverImage } style={{ alignSelf: "center", marginBottom: 40, zIndex: 1, WebkitUserSelect: "none" }} />
-        <img src={ buttonRestart } style={{ alignSelf: "center", zIndex: 1, WebkitUserSelect: "none", cursor: "pointer" }} onClick={ onButtonClick } />
+        />
+        <img
+          src={ gameOverImage }
+          style={{
+            width: "35%",
+            alignSelf: "center",
+            marginBottom: "5%",
+            zIndex: 1,
+            WebkitUserSelect: "none"
+          }}
+        />
+        <img
+          src={ buttonRestart }
+          style={{
+            width: "20%",
+            alignSelf: "center",
+            zIndex: 1,
+            WebkitUserSelect: "none",
+            cursor: "pointer"
+          }}
+          onClick={ onButtonClick }
+        />
       </div>
     );
   }
