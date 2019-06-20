@@ -56,22 +56,25 @@ export class Game extends React.Component<GameProps, GameState> {
     this.setState({ game });
 
     window.addEventListener("resize", this.resize);
+    screen.orientation.addEventListener("change", this.resize);
     setTimeout(() => this.resize(), 0);
   }
 
   resize = (): void => {
-    const { game } = this.state;
+    setTimeout(() => {
+      const { game } = this.state;
 
-    if (game) {
-      this.props.gameResize({
-        width: parseInt(game.canvas.style.width, 10),
-        height: parseInt(game.canvas.style.height, 10),
-        margin: {
-          top: parseInt(game.canvas.style.marginTop, 10),
-          left: parseInt(game.canvas.style.marginLeft, 10)
-        }
-      })
-    }
+      if (game) {
+        this.props.gameResize({
+          width: parseInt(game.canvas.style.width, 10),
+          height: parseInt(game.canvas.style.height, 10),
+          margin: {
+            top: parseInt(game.canvas.style.marginTop, 10),
+            left: parseInt(game.canvas.style.marginLeft, 10)
+          }
+        })
+      }
+    }, 0);
   }
 
   shouldComponentUpdate() {
