@@ -1,40 +1,23 @@
 import * as React from 'react';
 import { startGame } from '../store/gameReducer';
 import { connect } from "react-redux";
-import { CONFIG } from "../config";
 import Menu from "./Menu";
 import GameOver from "./GameOver";
+import CanvasProps from "../util/interfaces/canvasProps";
 
 interface UIProps {
+  canvasProps: CanvasProps,
   menu: boolean,
   gameStarted: boolean,
   gameOver: boolean,
   startGame: any
 }
 
-interface UIState {
-  leftOffset: number
-}
+interface UIState {}
 
 export class UI extends React.Component<UIProps, UIState> {
   constructor(props) {
     super(props);
-
-    this.state = {
-      leftOffset: 0
-    }
-  }
-
-  componentDidMount(): void {
-    this.setState({ leftOffset: this.calculateLeftOffset() });
-
-    window.addEventListener('resize', () => {
-      this.setState({ leftOffset: this.calculateLeftOffset() })
-    });
-  }
-
-  calculateLeftOffset(): number {
-    return window.innerWidth / 2 - CONFIG.GAME_WIDTH / 2 - 18;
   }
 
   onButtonClick = (): void => {
@@ -42,24 +25,24 @@ export class UI extends React.Component<UIProps, UIState> {
   }
 
   render() {
-    const { leftOffset } = this.state;
-    const { menu, gameStarted, gameOver } = this.props;
+    const { canvasProps, menu, gameStarted, gameOver } = this.props;
 
     if (menu && !gameStarted && !gameOver)
       return (
-        <Menu leftOffset={leftOffset} onButtonClick={this.onButtonClick}/>
+        <Menu canvasProps={canvasProps} onButtonClick={this.onButtonClick}/>
       )
     
     if (gameStarted && gameOver)
       return (
-        <GameOver leftOffset={leftOffset} onButtonClick={this.onButtonClick}/>
+        <GameOver canvasProps={canvasProps} onButtonClick={this.onButtonClick}/>
       )
 
     return null;
   }
 }
 
-const mapStateToProps = ({ menu, gameStarted, gameOver }: UIProps) => ({
+const mapStateToProps = ({ canvasProps, menu, gameStarted, gameOver }: UIProps) => ({
+  canvasProps,
   menu,
   gameStarted,
   gameOver,
