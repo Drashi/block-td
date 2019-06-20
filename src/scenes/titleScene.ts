@@ -1,5 +1,6 @@
 import "phaser";
 import store from '../store';
+import { Unsubscribe } from "redux";
 import { CONFIG } from "../config";
 
 export class TitleScene extends Phaser.Scene {
@@ -9,9 +10,11 @@ export class TitleScene extends Phaser.Scene {
     });
 
     store.dispatch({ type: 'MENU'});
-    store.subscribe(() => {
-      if (store.getState().gameStarted && !store.getState().gameOver)
+    const unsubscribe: Unsubscribe = store.subscribe(() => {
+      if (store.getState().gameStarted && !store.getState().gameOver) {
         this.scene.switch('GameScene');
+        unsubscribe();
+      }
     });
   }
 

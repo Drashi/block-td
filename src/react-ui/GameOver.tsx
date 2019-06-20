@@ -32,7 +32,6 @@ class GameOver extends React.Component<GameOverProps> {
             position: "absolute",
             width: canvasProps.width,
             height: canvasProps.height,
-            marginLeft: canvasProps.margin.left,
             backgroundColor: "#000000",
             opacity: 0.5
           }}
