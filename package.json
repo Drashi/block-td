@@ -1,6 +1,6 @@
 {
   "name": "block-td",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A HTML tower defence game, made using Typescript, React + Redux and Phaser.",
   "scripts": {
     "dev": "npm run clean && webpack --config ./config/webpack.config.development.js && webpack-dev-server --config ./config/webpack.config.development.js",
